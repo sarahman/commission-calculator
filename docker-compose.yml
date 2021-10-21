@@ -1,0 +1,11 @@
+version: '3.5'
+
+services:
+  app:
+    build:
+      context: ./docker/app
+      dockerfile: Dockerfile
+    image: paysera.com/commission-calculator
+    container_name: paysera-commission-calculator-app
+    volumes:
+      - .:/var/www/html
