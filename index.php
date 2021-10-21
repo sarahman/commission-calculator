@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Paysera\CommissionTask\Service\DataReader\CsvDataReader;
 use Paysera\CommissionTask\Service\DataReader\CsvFormatter;
+use Paysera\CommissionTask\Service\ExchangeRate\RateFormatter;
+use Paysera\CommissionTask\Service\ExchangeRate\RateService;
 use Paysera\CommissionTask\Transactions\Collection as TransactionCollection;
 
 require_once './vendor/autoload.php';
@@ -18,5 +20,8 @@ $rawData = (new CsvDataReader($_ENV['CSV_URL']))
 
 $collection = new TransactionCollection($rawData);
 
-var_dump($collection);
+$exchangeRateServiceObj = (new RateService($_ENV['EXCHANGE_RATE_URL'], $_ENV['EXCHANGE_ACCESS_KEY']))
+    ->setFormatter(new RateFormatter());
+
+var_dump($exchangeRateServiceObj->getRate('EUR'));
 die;

@@ -1,7 +1,7 @@
 {
-    "name": "paysera/commission-task-skeleton",
-    "description": "Skeleton for Paysera recruitment task",
-    "keywords": [],
+    "name": "paysera/commission-calculator",
+    "description": "Commission Calculator for various clients of Paysera",
+    "keywords": ["paysera", "calculator", "commission", "clients"],
     "type": "project",
     "autoload": {
         "psr-4": {
@@ -16,6 +16,8 @@
     "require": {
         "php": ">=7.0",
         "ext-bcmath": "*",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^6.5",
         "vlucas/phpdotenv": "^4.2"
     },
     "require-dev": {
