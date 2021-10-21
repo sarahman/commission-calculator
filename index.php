@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 use Paysera\CommissionTask\CalculatorManager;
+use Paysera\CommissionTask\CommissionRules\DepositRule;
+use Paysera\CommissionTask\CommissionRules\WithdrawBusinessRule;
+use Paysera\CommissionTask\CommissionRules\WithdrawPrivateRule;
 use Paysera\CommissionTask\Service\DataReader\CsvDataReader;
 use Paysera\CommissionTask\Service\DataReader\CsvFormatter;
 use Paysera\CommissionTask\Service\ExchangeRate\RateFormatter;
@@ -26,6 +29,9 @@ $exchangeRateServiceObj = (new RateService($_ENV['EXCHANGE_RATE_URL'], $_ENV['EX
 
 $commissions = (new CalculatorManager())
     ->addTransactions($collection)
+    ->addRule(new DepositRule())
+    ->addRule(new WithdrawBusinessRule())
+    ->addRule(new WithdrawPrivateRule($exchangeRateServiceObj))
     ->applyAllRules()
     ->getCommissions();
 

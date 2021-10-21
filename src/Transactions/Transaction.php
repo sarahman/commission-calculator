@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Paysera\CommissionTask\Transactions;
 
-use Paysera\CommissionTask\Helper;
 use Paysera\CommissionTask\Service\DataReader\InputData;
 
 class Transaction
@@ -94,7 +93,7 @@ class Transaction
     /**
      * @return bool
      */
-    public function isPrivateWithdraw(): bool
+    public function isPrivateClient(): bool
     {
         return 'private' === $this->userType;
     }
@@ -102,7 +101,7 @@ class Transaction
     /**
      * @return bool
      */
-    public function isBusinessWithdraw(): bool
+    public function isBusinessClient(): bool
     {
         return 'business' === $this->userType;
     }
