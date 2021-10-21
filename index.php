@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Paysera\CommissionTask\Service\DataReader\CsvDataReader;
 use Paysera\CommissionTask\Service\DataReader\CsvFormatter;
+use Paysera\CommissionTask\Transactions\Collection as TransactionCollection;
 
 require_once './vendor/autoload.php';
 
@@ -15,5 +16,7 @@ $rawData = (new CsvDataReader($_ENV['CSV_URL']))
     ->parseData()
     ->getData();
 
-var_dump($rawData);
+$collection = new TransactionCollection($rawData);
+
+var_dump($collection);
 die;
