@@ -1,11 +1,44 @@
-# Paysera Commission task skeleton
+# Paysera Commission Calculator
+It's very simple weekly commission calculator package.
+This package read transaction from a CSV file then apply Pre define commission rules.
 
-Following steps:
-- don't forget to change `Paysera` namespace and package name in `composer.json`
- to your own, as `Paysera` keyword should not be used anywhere in your task;
-- `\Paysera\CommissionTask\Service\Math` is an example class provided for the skeleton and could or could not be used by your preference;
-- needed scripts could be found inside `composer.json`;
-- before submitting the task make sure that all the scripts pass (`composer run test` in particular);
-- this file should be updated before submitting the task with the documentation on how to run your program.
+**How to install:**
 
-Good luck! :) 
+* After cloning the project and installing `docker` and `docker-compose`, run
+
+```properties
+docker-composer up -d
+```
+
+* Then run the following command to enter the docker container of the calculator app:
+
+```properties
+docker exec -it paysera-commission-calculator-app bash
+```
+
+* Then run the following command
+
+```properties
+composer install
+```
+
+* Create ENV
+
+```properties
+composer run create-env
+```
+
+* Change Your Access KEY for Exchange rate API in the `.env` file.
+Run project by
+
+```properties
+php index.php
+```
+
+**How to test:**
+
+Run Unit Test by
+
+```properties
+composer run phpunit
+```
