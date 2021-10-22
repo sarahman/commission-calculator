@@ -39,7 +39,7 @@ class WithdrawPrivateRule implements RuleContract
             $weeklyHistory = $this->historyManager->getData($index);
 
             if (empty($weeklyHistory)) {
-                $weeklyHistory = ['weeklyTotal' => 0.00, 'weeklyCount' => 0];
+                $weeklyHistory = ['totalAmount' => 0.00, 'transactionCount' => 0];
             }
 
             if ($transaction->isCurrencyEuro()) {
@@ -50,16 +50,16 @@ class WithdrawPrivateRule implements RuleContract
 
             $euroAmount = $transaction->getAmount() / $rate;
 
-            if ($weeklyHistory['weeklyCount'] >= $this->weeklyFreeTransactionCount || $weeklyHistory['weeklyTotal'] >= $this->weeklyChargeFreeAmount) {
+            if ($weeklyHistory['transactionCount'] >= $this->weeklyFreeTransactionCount || $weeklyHistory['totalAmount'] >= $this->weeklyChargeFreeAmount) {
                 $chargeableAmount = $euroAmount;
-            } elseif ($weeklyHistory['weeklyCount'] < $this->weeklyFreeTransactionCount && $weeklyHistory['weeklyTotal'] + $euroAmount <= $this->weeklyChargeFreeAmount) {
+            } elseif ($weeklyHistory['transactionCount'] < $this->weeklyFreeTransactionCount && $weeklyHistory['totalAmount'] + $euroAmount <= $this->weeklyChargeFreeAmount) {
                 $chargeableAmount = 0.00;
             } else {
-                $chargeableAmount = abs(($weeklyHistory['weeklyTotal'] + $euroAmount) - $this->weeklyChargeFreeAmount);
+                $chargeableAmount = abs(($weeklyHistory['totalAmount'] + $euroAmount) - $this->weeklyChargeFreeAmount);
             }
 
             $transaction->setCommission(($this->commissionFee / 100) * $chargeableAmount * $rate);
-            $this->updateMemoryWithIndex($index, $weeklyHistory, $euroAmount);
+            $this->updateHistory($index, $weeklyHistory, $euroAmount);
         }
 
         return $transaction;
@@ -71,27 +71,12 @@ class WithdrawPrivateRule implements RuleContract
      * @param float $amount
      * @return bool
      */
-    protected function updateMemoryWithIndex(string $index, array $weeklyHistory, float $amount): bool
+    protected function updateHistory(string $index, array $weeklyHistory, float $amount): bool
     {
-        $weeklyHistory['weeklyTotal'] += $amount;
-        ++$weeklyHistory['weeklyCount'];
+        $weeklyHistory['totalAmount'] += $amount;
+        ++$weeklyHistory['transactionCount'];
 
         return $this->historyManager->saveData($index, $weeklyHistory);
-    }
-
-    protected function setWeeklyCountConstrain(int $weeklyFreeTransactionCount)
-    {
-        $this->weeklyFreeTransactionCount = $weeklyFreeTransactionCount;
-    }
-
-    protected function setWeeklyChargeFreeAmount(int $weeklyChargeFreeAmount)
-    {
-        $this->weeklyChargeFreeAmount = $weeklyChargeFreeAmount;
-    }
-
-    protected function setCommissionFee(float $commissionFee)
-    {
-        $this->commissionFee = $commissionFee;
     }
 
     private function getWeekCount(string $date)
