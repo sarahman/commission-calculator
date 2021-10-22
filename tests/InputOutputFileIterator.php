@@ -30,7 +30,7 @@ final class InputOutputFileIterator implements Iterator
         rewind($this->inputFile);
         rewind($this->outputFile);
 
-        $this->current = array_merge(fgetcsv($this->inputFile), fgetcsv($this->outputFile));
+        $this->current = array_merge((array) fgetcsv($this->inputFile), (array) fgetcsv($this->outputFile));
 
         $this->key = 0;
     }
@@ -52,7 +52,7 @@ final class InputOutputFileIterator implements Iterator
 
     public function next()
     {
-        $this->current = array_merge(fgetcsv($this->inputFile), fgetcsv($this->outputFile));
+        $this->current = array_merge((array) fgetcsv($this->inputFile), (array) fgetcsv($this->outputFile));
 
         $this->key++;
     }

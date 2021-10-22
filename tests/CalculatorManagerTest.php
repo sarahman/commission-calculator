@@ -52,15 +52,48 @@ class CalculatorManagerTest extends TestCase
         ]);
 
         $manager = new CalculatorManager();
-        $calculateTransaction = $manager->addTransactions($collection)
+        $calculatedTransactions = $manager->addTransactions($collection)
             ->addRule(new DepositRule())
             ->addRule(new WithdrawBusinessRule())
             ->addRule(new WithdrawPrivateRule($rateService))
             ->applyAllRules()
             ->getAllTransactions();
 
-        $this->assertEquals(1, count($calculateTransaction));
-        $this->assertEquals($commission, round($calculateTransaction[0]->getCommission(), 2));
+        $this->assertEquals(1, count($calculatedTransactions));
+        $this->assertEquals($commission, round($calculatedTransactions[0]->getCommission(), 2));
+    }
+
+    public function testAllTransactionsWithMatchingInputAndOutput()
+    {
+        $transactions = [];
+        $expectedCommissions = [];
+        $currencyMapping = [];
+        foreach (new InputOutputFileIterator('./input.csv', './output.csv') as $transaction) {
+            $transactions[] = $this->getSampleTransaction($transaction[0], $transaction[1], $transaction[2], $transaction[3], $transaction[4], $transaction[5]);
+
+            $currencyMapping[] = [$transaction[5], true, $transaction[7]];
+
+            $expectedCommissions[] = $transaction[6];
+        }
+
+        $rateService = $this->mockRateService();
+        $rateService->method('getRate')->will($this->returnValueMap($currencyMapping));
+
+        $collection = new TransactionCollection($transactions);
+
+        $manager = new CalculatorManager();
+        $calculatedTransactions = $manager->addTransactions($collection)
+            ->addRule(new DepositRule())
+            ->addRule(new WithdrawBusinessRule())
+            ->addRule(new WithdrawPrivateRule($rateService))
+            ->applyAllRules()
+            ->getAllTransactions();
+
+        $this->assertEquals(13, count($calculatedTransactions));
+
+        foreach ($calculatedTransactions as $key => $transaction) {
+            $this->assertEquals($expectedCommissions[$key], $transaction->getCommission(), 'Transaction #' . ($key + 1));
+        }
     }
 
     public function dataProviderForAddTesting(): InputOutputFileIterator
@@ -77,7 +110,7 @@ class CalculatorManagerTest extends TestCase
      * @param $currency
      * @return InputData
      */
-    public function getSampleTransaction($transactionDate, $userId, $userType, $operationType, $amount, $currency): InputData
+    private function getSampleTransaction($transactionDate, $userId, $userType, $operationType, $amount, $currency): InputData
     {
         $inputObject = new InputData();
         $inputObject->setTransactionDate($transactionDate);
