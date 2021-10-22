@@ -9,7 +9,7 @@ class Collection
     /**
      * @var array
      */
-    private $transactionalEntities;
+    private $transactionalEntities = [];
 
     /**
      * Collection constructor fot Transactions.
