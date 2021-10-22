@@ -35,6 +35,14 @@ class Transaction
     }
 
     /**
+     * @return bool
+     */
+    public function isCurrencyJpy(): bool
+    {
+        return 'JPY' === $this->operationCurrency;
+    }
+
+    /**
      * @return float
      */
     public function getAmount(): float
@@ -71,6 +79,10 @@ class Transaction
      */
     public function setCommission(float $commission)
     {
+        if ($this->isCurrencyJpy()) {
+            $commission = ceil($commission);
+        }
+
         $this->commission = $commission;
     }
 

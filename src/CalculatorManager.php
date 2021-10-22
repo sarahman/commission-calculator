@@ -48,10 +48,10 @@ class CalculatorManager
     public function applyAllRules()
     {
         if (count($this->rules)) {
-            $this->transactions->each(function ($eachTransaction) {
+            $this->transactions->each(function ($transaction) {
                 foreach ($this->rules as $rule) {
                     /** @var RuleContract $rule */
-                    $rule->applyRule($eachTransaction);
+                    $rule->applyRule($transaction);
                 }
             });
         }
@@ -63,9 +63,13 @@ class CalculatorManager
     {
         $commissions = [];
 
-        $this->transactions->each(function ($eachTransaction) use (&$commissions) {
-            /** @var Transaction $eachTransaction */
-            $commissions[] = number_format($eachTransaction->getCommission(), 2, '.', '');
+        $this->transactions->each(function ($transaction) use (&$commissions) {
+            /** @var Transaction $transaction */
+            if ($transaction->isCurrencyJpy()) {
+                $commissions[] = $transaction->getCommission();
+            } else {
+                $commissions[] = number_format($transaction->getCommission(), 2, '.', '');
+            }
         });
 
         return $commissions;

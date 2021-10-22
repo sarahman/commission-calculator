@@ -65,7 +65,7 @@ class CalculatorManagerTest extends TestCase
 
     public function dataProviderForAddTesting(): InputOutputFileIterator
     {
-        return new InputOutputFileIterator('./input.csv', './output.csv');
+        return new InputOutputFileIterator('./input.csv', './output2.csv');
     }
 
     /**
