@@ -32,7 +32,13 @@ composer run create-env
 Run project by
 
 ```properties
-php index.php
+php script.php input.csv
+```
+
+or
+
+```properties
+php script.php
 ```
 
 **How to test:**

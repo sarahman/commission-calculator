@@ -17,7 +17,7 @@ require_once './vendor/autoload.php';
 $dotEnv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotEnv->load();
 
-$rawData = (new CsvDataReader($_ENV['CSV_URL']))
+$rawData = (new CsvDataReader(empty($argv[1]) ? $_ENV['CSV_URL'] : $argv[1]))
     ->setFormatter(new CsvFormatter())
     ->parseData()
     ->getData();
