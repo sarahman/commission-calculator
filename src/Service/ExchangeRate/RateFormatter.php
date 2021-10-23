@@ -17,6 +17,6 @@ class RateFormatter implements RateFormatterContract
             return 0.00;
         }
 
-        return round($rates['rates'][$currency], 2);
+        return floatval($rates['rates'][$currency]);
     }
 }
