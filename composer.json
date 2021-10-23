@@ -32,6 +32,7 @@
         "create-env": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
+        "script": "@php script.php input.csv",
         "phpcs": "phpcs --standard=PSR12 ./src",
         "phpunit": "phpunit",
         "fix-cs": "php-cs-fixer fix",

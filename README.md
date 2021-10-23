@@ -41,6 +41,12 @@ or
 php script.php
 ```
 
+or
+
+```properties
+composer run script
+```
+
 **How to test:**
 
 Run Unit Test by
