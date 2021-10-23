@@ -4,7 +4,7 @@ LABEL maintainer="Syed Abidur Rahman <aabid048@gmail.com>"
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
-RUN apt-get update && apt-get install -y curl git
+RUN apt-get update && apt-get install -y curl git unzip zip
 
 RUN docker-php-ext-install bcmath
 
