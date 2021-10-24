@@ -8,7 +8,7 @@ use Sarahman\CommissionTask\CommissionRules\RuleContract;
 use Sarahman\CommissionTask\Transactions\Collection;
 use Sarahman\CommissionTask\Transactions\Transaction;
 
-class CalculatorManager
+class CommissionCalculator
 {
     /**
      * @var Collection
@@ -22,49 +22,25 @@ class CalculatorManager
 
     /**
      * @param Collection $collection
-     * @return $this
+     * @param array $rules
      */
-    public function addTransactions(Collection $collection)
+    public function __construct(Collection $collection, array $rules)
     {
         $this->transactions = $collection;
-
-        return $this;
+        $this->rules = $rules;
     }
 
-    /**
-     * @param RuleContract $rule
-     * @return $this
-     */
-    public function addRule(RuleContract $rule)
-    {
-        $this->rules[] = $rule;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function applyAllRules()
-    {
-        if (count($this->rules)) {
-            $this->transactions->each(function ($transaction) {
-                foreach ($this->rules as $rule) {
-                    /** @var RuleContract $rule */
-                    $rule->applyRule($transaction);
-                }
-            });
-        }
-
-        return $this;
-    }
-
-    public function getCommissions()
+    public function process(): array
     {
         $commissions = [];
 
         $this->transactions->each(function ($transaction) use (&$commissions) {
             /** @var Transaction $transaction */
+            foreach ($this->rules as $rule) {
+                /** @var RuleContract $rule */
+                $rule->applyRule($transaction);
+            }
+
             if ($transaction->isCurrencyJpy()) {
                 $commissions[] = $transaction->getCommission();
             } else {

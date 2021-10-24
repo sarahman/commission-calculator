@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sarahman\CommissionTask\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sarahman\CommissionTask\CalculatorManager;
+use Sarahman\CommissionTask\CommissionCalculator;
 use Sarahman\CommissionTask\CommissionRules\DepositRule;
 use Sarahman\CommissionTask\CommissionRules\WithdrawBusinessRule;
 use Sarahman\CommissionTask\CommissionRules\WithdrawPrivateRule;
@@ -13,22 +13,24 @@ use Sarahman\CommissionTask\Service\DataReader\InputData;
 use Sarahman\CommissionTask\Service\ExchangeRate\Client;
 use Sarahman\CommissionTask\Transactions\Collection as TransactionCollection;
 
-class CalculatorManagerTest extends TestCase
+class CommissionCalculatorTest extends TestCase
 {
     public function testCommissionWhenDataIsEmpty()
     {
-        $rateService = $this->mockExchangeRateClient();
-        $rateService->method('getRate')->willReturn(1.00);
+        $exchangeClientObj = $this->mockExchangeRateClient();
+        $exchangeClientObj->method('getRate')->willReturn(1.00);
 
-        $manager = new CalculatorManager();
+        $rules = [
+            new DepositRule(),
+            new WithdrawBusinessRule(),
+            new WithdrawPrivateRule($exchangeClientObj)
+        ];
 
-        $manager->addTransactions(new TransactionCollection([]))
-            ->addRule(new DepositRule())
-            ->addRule(new WithdrawBusinessRule())
-            ->addRule(new WithdrawPrivateRule($rateService))
-            ->applyAllRules();
+        $manager = new CommissionCalculator(new TransactionCollection([]), $rules);
+        $commissions = $manager->process();
 
-        $this->assertEquals(0, count($manager->getAllTransactions()));
+        $this->assertInternalType('array', $commissions);
+        $this->assertEquals(0, count($commissions));
     }
 
     /**
@@ -44,23 +46,25 @@ class CalculatorManagerTest extends TestCase
      */
     public function testEveryTransactionWithMatchingInputAndOutput($transactionDate, $userId, $userType, $operationType, $amount, $currency, $commission, $rate)
     {
-        $rateService = $this->mockExchangeRateClient();
-        $rateService->method('getRate')->willReturn($rate);
+        $exchangeClientObj = $this->mockExchangeRateClient();
+        $exchangeClientObj->method('getRate')->willReturn($rate);
+
+        $rules = [
+            new DepositRule(),
+            new WithdrawBusinessRule(),
+            new WithdrawPrivateRule($exchangeClientObj)
+        ];
 
         $collection = new TransactionCollection([
             $this->getSampleTransaction($transactionDate, $userId, $userType, $operationType, $amount, $currency)
         ]);
 
-        $manager = new CalculatorManager();
-        $calculatedTransactions = $manager->addTransactions($collection)
-            ->addRule(new DepositRule())
-            ->addRule(new WithdrawBusinessRule())
-            ->addRule(new WithdrawPrivateRule($rateService))
-            ->applyAllRules()
-            ->getAllTransactions();
+        $manager = new CommissionCalculator($collection, $rules);
+        $commissions = $manager->process();
 
-        $this->assertEquals(1, count($calculatedTransactions));
-        $this->assertEquals($commission, round($calculatedTransactions[0]->getCommission(), 2));
+        $this->assertInternalType('array', $commissions);
+        $this->assertEquals(1, count($commissions));
+        $this->assertEquals($commission, round($commissions[0], 2));
     }
 
     public function testAllTransactionsWithMatchingInputAndOutput()
@@ -76,23 +80,25 @@ class CalculatorManagerTest extends TestCase
             $expectedCommissions[] = $transaction[6];
         }
 
-        $rateService = $this->mockExchangeRateClient();
-        $rateService->method('getRate')->will($this->returnValueMap($currencyMapping));
+        $exchangeClientObj = $this->mockExchangeRateClient();
+        $exchangeClientObj->method('getRate')->will($this->returnValueMap($currencyMapping));
+
+        $rules = [
+            new DepositRule(),
+            new WithdrawBusinessRule(),
+            new WithdrawPrivateRule($exchangeClientObj)
+        ];
 
         $collection = new TransactionCollection($transactions);
 
-        $manager = new CalculatorManager();
-        $calculatedTransactions = $manager->addTransactions($collection)
-            ->addRule(new DepositRule())
-            ->addRule(new WithdrawBusinessRule())
-            ->addRule(new WithdrawPrivateRule($rateService))
-            ->applyAllRules()
-            ->getAllTransactions();
+        $manager = new CommissionCalculator($collection, $rules);
+        $commissions = $manager->process();
 
-        $this->assertEquals(13, count($calculatedTransactions));
+        $this->assertInternalType('array', $commissions);
+        $this->assertEquals(13, count($commissions));
 
-        foreach ($calculatedTransactions as $key => $transaction) {
-            $this->assertEquals($expectedCommissions[$key], $transaction->getCommission(), 'Transaction #' . ($key + 1));
+        foreach ($commissions as $key => $commission) {
+            $this->assertEquals($expectedCommissions[$key], $commission, 'Transaction #' . ($key + 1));
         }
     }
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Sarahman\CommissionTask\CalculatorManager;
+use Sarahman\CommissionTask\CommissionCalculator;
 use Sarahman\CommissionTask\CommissionRules\DepositRule;
 use Sarahman\CommissionTask\CommissionRules\WithdrawBusinessRule;
 use Sarahman\CommissionTask\CommissionRules\WithdrawPrivateRule;
@@ -22,15 +22,13 @@ $rawData = (new CsvDataReader(empty($argv[1]) ? $_ENV['CSV_URL'] : $argv[1]))
     ->getData();
 
 $collection = new TransactionCollection($rawData);
-
 $exchangeClientObj = (new Client($_ENV['EXCHANGE_RATE_URL'], $_ENV['EXCHANGE_ACCESS_KEY']));
+$rules = [
+    new DepositRule(),
+    new WithdrawBusinessRule(),
+    new WithdrawPrivateRule($exchangeClientObj)
+];
 
-$commissions = (new CalculatorManager())
-    ->addTransactions($collection)
-    ->addRule(new DepositRule())
-    ->addRule(new WithdrawBusinessRule())
-    ->addRule(new WithdrawPrivateRule($exchangeClientObj))
-    ->applyAllRules()
-    ->getCommissions();
+$commissions = (new CommissionCalculator($collection, $rules))->process();
 
 print join(PHP_EOL, $commissions) . PHP_EOL;
