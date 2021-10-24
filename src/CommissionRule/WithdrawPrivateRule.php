@@ -38,10 +38,6 @@ class WithdrawPrivateRule implements RuleContract
         $this->commissionFee = 0.3;
     }
 
-    /**
-     * @param Transaction $transaction
-     * @return Transaction
-     */
     public function applyRule(Transaction $transaction): Transaction
     {
         if ($transaction->isWithdraw() && $transaction->isPrivateClient()) {
@@ -85,13 +81,7 @@ class WithdrawPrivateRule implements RuleContract
         return $transaction;
     }
 
-    /**
-     * @param string $index
-     * @param array $weeklyHistory
-     * @param float $amount
-     * @return bool
-     */
-    protected function updateHistory(string $index, array $weeklyHistory, float $amount): bool
+    private function updateHistory(string $index, array $weeklyHistory, float $amount): bool
     {
         $weeklyHistory['totalAmount'] += $amount;
         $weeklyHistory['transactionCount']++;
@@ -99,7 +89,7 @@ class WithdrawPrivateRule implements RuleContract
         return $this->historyManager->saveData($index, $weeklyHistory);
     }
 
-    private function getWeekCount(string $date)
+    private function getWeekCount(string $date): string
     {
         $startDate = new DateTime('1970-01-05');
         $endDate = new DateTime($date);

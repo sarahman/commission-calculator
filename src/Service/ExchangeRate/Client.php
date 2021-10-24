@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Sarahman\CommissionTask\Service\ExchangeRate;
 
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Exception\GuzzleException;
-use Exception;
 
 class Client
 {
@@ -27,14 +25,6 @@ class Client
         $this->cacheData = [];
     }
 
-    /**
-     * @param string $currency
-     * @param bool $cache
-     * @return float
-     * @throws BadResponseException
-     * @throws GuzzleException
-     * @throws Exception
-     */
     public function getRate(string $currency, $cache = true): float
     {
         if (!$cache || 0 === count($this->cacheData)) {
@@ -62,10 +52,6 @@ class Client
         return $this->formatter->format($this->cacheData, $currency);
     }
 
-    /**
-     * @param string $string
-     * @return bool
-     */
     private function isJson(string $string): bool
     {
         json_decode($string);

@@ -6,10 +6,6 @@ namespace Sarahman\CommissionTask\Service\DataReader;
 
 class DataFormatter
 {
-    /**
-     * @param array $rawData
-     * @return InputData
-     */
     public function format(array $rawData): InputData
     {
         $inputData = new InputData();

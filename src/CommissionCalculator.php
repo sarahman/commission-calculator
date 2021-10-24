@@ -13,10 +13,6 @@ class CommissionCalculator
     private $reader;
     private $rules;
 
-    /**
-     * @param DataReader $reader
-     * @param array $rules
-     */
     public function __construct(DataReader $reader, array $rules)
     {
         $this->reader = $reader;

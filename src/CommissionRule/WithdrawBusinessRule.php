@@ -8,10 +8,6 @@ use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
 class WithdrawBusinessRule implements RuleContract
 {
-    /**
-     * @param Transaction $transaction
-     * @return Transaction
-     */
     public function applyRule(Transaction $transaction): Transaction
     {
         if ($transaction->isWithdraw() && $transaction->isBusinessClient()) {

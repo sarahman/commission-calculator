@@ -46,9 +46,6 @@ class InputData
         $this->operationCurrency = 'EUR';
     }
 
-    /**
-     * @param string $transactionDate
-     */
     public function setTransactionDate(string $transactionDate)
     {
         $this->transactionDate = $transactionDate;
@@ -59,9 +56,6 @@ class InputData
         return $this->transactionDate;
     }
 
-    /**
-     * @param string $userIdentification
-     */
     public function setUserIdentification(string $userIdentification)
     {
         $this->userIdentification = $userIdentification;
@@ -72,9 +66,6 @@ class InputData
         return $this->userIdentification;
     }
 
-    /**
-     * @param string $userType
-     */
     public function setUserType(string $userType)
     {
         $this->userType = $userType;
@@ -85,9 +76,6 @@ class InputData
         return $this->userType;
     }
 
-    /**
-     * @param string $operationType
-     */
     public function setOperationType(string $operationType)
     {
         $this->operationType = strtolower($operationType);
@@ -98,9 +86,6 @@ class InputData
         return $this->operationType;
     }
 
-    /**
-     * @param float $operationAmount
-     */
     public function setOperationAmount(float $operationAmount)
     {
         $this->operationAmount = $operationAmount;
@@ -111,9 +96,6 @@ class InputData
         return $this->operationAmount;
     }
 
-    /**
-     * @param string $operationCurrency
-     */
     public function setOperationCurrency(string $operationCurrency)
     {
         $this->operationCurrency = strtoupper($operationCurrency);

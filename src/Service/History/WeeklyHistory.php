@@ -13,20 +13,11 @@ class WeeklyHistory
         $this->memory = [];
     }
 
-    /**
-     * @param string $index
-     * @return array
-     */
     public function getData(string $index): array
     {
         return isset($this->memory[$index]) ? $this->memory[$index] : [];
     }
 
-    /**
-     * @param string $index
-     * @param array $data
-     * @return bool
-     */
     public function saveData(string $index, array $data): bool
     {
         $this->memory[$index] = $data;
