@@ -6,12 +6,45 @@ namespace Sarahman\CommissionTask\Service\DataReader;
 
 class InputData
 {
-    private $transactionDate = '';
-    private $userIdentification = '';
-    private $userType = '';
-    private $operationType = '';
-    private $operationAmount = 0.00;
-    private $operationCurrency = 'EUR';
+    /**
+     * @var string
+     */
+    private $transactionDate;
+
+    /**
+     * @var string
+     */
+    private $userIdentification;
+
+    /**
+     * @var string
+     */
+    private $userType;
+
+    /**
+     * @var string
+     */
+    private $operationType;
+
+    /**
+     * @var float
+     */
+    private $operationAmount;
+
+    /**
+     * @var string
+     */
+    private $operationCurrency;
+
+    public function __construct()
+    {
+        $this->transactionDate = '';
+        $this->userIdentification = '';
+        $this->userType = '';
+        $this->operationType = '';
+        $this->operationAmount = 0.00;
+        $this->operationCurrency = 'EUR';
+    }
 
     /**
      * @param string $transactionDate

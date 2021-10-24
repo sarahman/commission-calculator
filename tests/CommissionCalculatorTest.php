@@ -6,12 +6,13 @@ namespace Sarahman\CommissionTask\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Sarahman\CommissionTask\CommissionCalculator;
-use Sarahman\CommissionTask\CommissionRules\DepositRule;
-use Sarahman\CommissionTask\CommissionRules\WithdrawBusinessRule;
-use Sarahman\CommissionTask\CommissionRules\WithdrawPrivateRule;
+use Sarahman\CommissionTask\CommissionRule\DepositRule;
+use Sarahman\CommissionTask\CommissionRule\WithdrawBusinessRule;
+use Sarahman\CommissionTask\CommissionRule\WithdrawPrivateRule;
+use Sarahman\CommissionTask\Service\DataReader\DataFormatter;
 use Sarahman\CommissionTask\Service\DataReader\DataReader;
-use Sarahman\CommissionTask\Service\DataReader\InputData;
 use Sarahman\CommissionTask\Service\ExchangeRate\Client;
+use Sarahman\CommissionTask\Service\History\WeeklyHistory;
 
 class CommissionCalculatorTest extends TestCase
 {
@@ -23,10 +24,10 @@ class CommissionCalculatorTest extends TestCase
         $rules = [
             new DepositRule(),
             new WithdrawBusinessRule(),
-            new WithdrawPrivateRule($exchangeClientObj)
+            new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory())
         ];
 
-        $collection = (new DataReader(''));
+        $collection = (new DataReader('', new DataFormatter()));
 
         $calculator = new CommissionCalculator($collection, $rules);
         $commissions = $calculator->process();
@@ -47,10 +48,10 @@ class CommissionCalculatorTest extends TestCase
         $rules = [
             new DepositRule(),
             new WithdrawBusinessRule(),
-            new WithdrawPrivateRule($exchangeClientObj)
+            new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory())
         ];
 
-        $collection = (new DataReader('./input.csv'));
+        $collection = (new DataReader('./input.csv', new DataFormatter()));
 
         $calculator = new CommissionCalculator($collection, $rules);
         $commissions = $calculator->process();

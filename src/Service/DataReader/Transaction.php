@@ -4,17 +4,42 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask\Service\DataReader;
 
-use Sarahman\CommissionTask\Service\DataReader\InputData;
-
 class Transaction
 {
+    /**
+     * @var string
+     */
     private $userIdentification;
+
+    /**
+     * @var string
+     */
     private $userType;
+
+    /**
+     * @var string
+     */
     private $operationType;
+
+    /**
+     * @var float
+     */
     private $operationAmount;
+
+    /**
+     * @var string
+     */
     private $operationCurrency;
+
+    /**
+     * @var string
+     */
     private $transactionDate;
-    private $commission = 0.00;
+
+    /**
+     * @var float
+     */
+    private $commission;
 
     public function __construct(InputData $obj)
     {
@@ -24,6 +49,7 @@ class Transaction
         $this->operationType = $obj->getOperationType();
         $this->operationAmount = $obj->getOperationAmount();
         $this->operationCurrency = $obj->getOperationCurrency();
+        $this->commission = 0.00;
     }
 
     /**
@@ -80,10 +106,10 @@ class Transaction
     public function setCommission(float $commission)
     {
         if ($this->isCurrencyJpy()) {
-            $commission = ceil($commission);
+            $this->commission = ceil($commission);
+        } else {
+            $this->commission = $commission;
         }
-
-        $this->commission = $commission;
     }
 
     /**
@@ -119,7 +145,7 @@ class Transaction
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getUserIdentification()
     {

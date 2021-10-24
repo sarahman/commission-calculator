@@ -4,42 +4,26 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask\Service\ExchangeRate;
 
-use Exception;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 
 class Client implements ClientContract
 {
-    /**
-     * @var GuzzleClient
-     */
     private $client;
-
-    /**
-     * @var RateFormatterContract
-     */
-    private $formatter = null;
+    private $formatter;
 
     /**
      * @var array
      */
-    private $cacheData = [];
-
-    /**
-     * @var string
-     */
+    private $cacheData;
     private $accessKey;
 
-    public function __construct(string $baseUrl, string $accessKey, RateFormatterContract $formatter = null)
+    public function __construct(string $baseUrl, string $accessKey, RateFormatterContract $formatter)
     {
         $this->client = new GuzzleClient(['base_uri' => $baseUrl]);
         $this->accessKey = $accessKey;
-
-        if (is_null($formatter)) {
-            $formatter = new RateFormatter();
-        }
-
         $this->formatter = $formatter;
+        $this->cacheData = [];
     }
 
     /**
@@ -51,18 +35,18 @@ class Client implements ClientContract
      */
     public function getRate(string $currency, $cache = true): float
     {
-        if (!$cache || empty($this->cacheData)) {
+        if (!$cache || 0 === count($this->cacheData)) {
             $response = $this->client->request('GET', 'latest', [
                 'query' => [
-                    'access_key' => $this->accessKey
+                    'access_key' => $this->accessKey,
                 ],
                 'headers' => [
                     'Content-Type' => 'application/json',
-                ]
+                ],
             ]);
 
             if (200 !== $response->getStatusCode()) {
-                throw new Exception('Get invalid data from rate exchange service!');
+                throw new BadResponseException('Invalid data is provided from the rate exchange service!');
             }
 
             $body = $response->getBody()->getContents();

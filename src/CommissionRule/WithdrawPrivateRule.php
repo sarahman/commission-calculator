@@ -2,30 +2,40 @@
 
 declare(strict_types=1);
 
-namespace Sarahman\CommissionTask\CommissionRules;
+namespace Sarahman\CommissionTask\CommissionRule;
 
 use DateTime;
+use Sarahman\CommissionTask\Service\DataReader\Transaction;
 use Sarahman\CommissionTask\Service\ExchangeRate\ClientContract;
 use Sarahman\CommissionTask\Service\History\WeeklyHistory;
-use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
 class WithdrawPrivateRule implements RuleContract
 {
     private $historyManager;
     private $exchangeClient;
-    private $weeklyFreeTransactionCount = 3;
-    private $weeklyChargeFreeAmount = 1000;
-    private $commissionFee = 0.3;
 
-    public function __construct(ClientContract $exchangeClient, WeeklyHistory $historyManager = null)
+    /**
+     * @var int
+     */
+    private $weeklyFreeTransactionCount;
+
+    /**
+     * @var float
+     */
+    private $weeklyChargeFreeAmount;
+
+    /**
+     * @var float
+     */
+    private $commissionFee;
+
+    public function __construct(ClientContract $exchangeClient, WeeklyHistory $historyManager)
     {
         $this->exchangeClient = $exchangeClient;
-
-        if (is_null($historyManager)) {
-            $historyManager = new WeeklyHistory();
-        }
-
         $this->historyManager = $historyManager;
+        $this->weeklyFreeTransactionCount = 3;
+        $this->weeklyChargeFreeAmount = 1000;
+        $this->commissionFee = 0.3;
     }
 
     /**
@@ -35,10 +45,10 @@ class WithdrawPrivateRule implements RuleContract
     public function applyRule(Transaction $transaction): Transaction
     {
         if ($transaction->isWithdraw() && $transaction->isPrivateClient()) {
-            $index = sprintf("%s:%s", $transaction->getUserIdentification(), $this->getWeekCount($transaction->getTransactionDate()));
+            $index = sprintf('%s:%s', $transaction->getUserIdentification(), $this->getWeekCount($transaction->getTransactionDate()));
             $weeklyHistory = $this->historyManager->getData($index);
 
-            if (empty($weeklyHistory)) {
+            if (0 === count($weeklyHistory)) {
                 $weeklyHistory = ['totalAmount' => 0.00, 'transactionCount' => 0];
             }
 
@@ -74,7 +84,7 @@ class WithdrawPrivateRule implements RuleContract
     protected function updateHistory(string $index, array $weeklyHistory, float $amount): bool
     {
         $weeklyHistory['totalAmount'] += $amount;
-        ++$weeklyHistory['transactionCount'];
+        $weeklyHistory['transactionCount']++;
 
         return $this->historyManager->saveData($index, $weeklyHistory);
     }
@@ -83,7 +93,7 @@ class WithdrawPrivateRule implements RuleContract
     {
         $startDate = new DateTime('1970-01-05');
         $endDate = new DateTime($date);
-        $totalDays = (int) $endDate->diff($startDate)->format("%a");
+        $totalDays = (int) $endDate->diff($startDate)->format('%a');
 
         return 'W#' . (string) (ceil($totalDays / 7) + ($totalDays % 7 ? 0 : 1));
     }

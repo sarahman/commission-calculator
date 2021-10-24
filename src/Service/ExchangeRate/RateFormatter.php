@@ -13,10 +13,10 @@ class RateFormatter implements RateFormatterContract
      */
     public function format(array $rates, string $currency): float
     {
-        if (empty($rates['rates']) || empty($rates['rates'][$currency])) {
+        if (!isset($rates['rates']) || !isset($rates['rates'][$currency])) {
             return 0.00;
         }
 
-        return floatval($rates['rates'][$currency]);
+        return (float) ($rates['rates'][$currency]);
     }
 }

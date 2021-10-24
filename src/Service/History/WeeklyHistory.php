@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask\Service\History;
 
-class WeeklyHistory implements HistoryContract
+class WeeklyHistory
 {
-    private $memory = [];
+    private $memory;
+
+    public function __construct()
+    {
+        $this->memory = [];
+    }
 
     /**
      * @param string $index
