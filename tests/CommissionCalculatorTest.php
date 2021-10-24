@@ -15,21 +15,34 @@ use Sarahman\CommissionTask\Service\History\WeeklyHistory;
 
 class CommissionCalculatorTest extends TestCase
 {
+    /**
+     * @var Client | \PHPUnit\Framework\MockObject\MockObject
+     */
+    private $exchangeClientObj;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->exchangeClientObj = $this->getMockBuilder(Client::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getRate'])
+            ->getMock()
+        ;
+    }
+
     public function testCommissionWhenDataIsEmpty()
     {
-        $exchangeClientObj = $this->mockExchangeRateClient();
-        $exchangeClientObj->method('getRate')->willReturn(1.00);
+        $this->exchangeClientObj->method('getRate')->willReturn(1.00);
 
+        $collection = new CsvDataReader('./tests/data/empty.csv');
         $rules = [
             new DepositRule(),
             new WithdrawBusinessRule(),
-            new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory()),
+            new WithdrawPrivateRule($this->exchangeClientObj, new WeeklyHistory()),
         ];
 
-        $collection = (new CsvDataReader('./tests/data/empty.csv'));
-
-        $calculator = new CommissionCalculator($collection, $rules);
-        $commissions = $calculator->calculate();
+        $commissions = (new CommissionCalculator($collection, $rules))->calculate();
 
         $this->assertIsArray($commissions);
         $this->assertEquals(0, count($commissions));
@@ -37,23 +50,20 @@ class CommissionCalculatorTest extends TestCase
 
     public function testAllTransactionsWithMatchingInputAndOutput()
     {
-        $exchangeClientObj = $this->mockExchangeRateClient();
-        $exchangeClientObj->method('getRate')->will($this->returnValueMap([
+        $this->exchangeClientObj->method('getRate')->will($this->returnValueMap([
             ['EUR', 1.0],
             ['USD', 1.1497],
             ['JPY', 129.53],
         ]));
 
+        $collection = new CsvDataReader('./input.csv');
         $rules = [
             new DepositRule(),
             new WithdrawBusinessRule(),
-            new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory()),
+            new WithdrawPrivateRule($this->exchangeClientObj, new WeeklyHistory()),
         ];
 
-        $collection = (new CsvDataReader('./input.csv'));
-
-        $calculator = new CommissionCalculator($collection, $rules);
-        $commissions = $calculator->calculate();
+        $commissions = (new CommissionCalculator($collection, $rules))->calculate();
 
         $this->assertIsArray($commissions);
         $this->assertEquals(13, count($commissions));
@@ -77,17 +87,5 @@ class CommissionCalculatorTest extends TestCase
         foreach ($commissions as $key => $commission) {
             $this->assertEquals($expectedCommissions[$key], $commission, 'Transaction #' . ($key + 1));
         }
-    }
-
-    /**
-     * @return Client | \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function mockExchangeRateClient()
-    {
-        return $this->getMockBuilder(Client::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getRate'])
-            ->getMock()
-        ;
     }
 }

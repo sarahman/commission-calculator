@@ -22,9 +22,8 @@ if (!file_exists($source)) {
     exit('Sorry; the file' . $source . ' is not existed!' . PHP_EOL);
 }
 
-$collection = (new CsvDataReader($source));
-
-$exchangeClientObj = (new Client($_ENV['EXCHANGE_RATE_URL'], $_ENV['EXCHANGE_ACCESS_KEY'], new RateFormatter()));
+$collection = new CsvDataReader($source);
+$exchangeClientObj = new Client($_ENV['EXCHANGE_RATE_URL'], $_ENV['EXCHANGE_ACCESS_KEY'], new RateFormatter());
 $rules = [
     new DepositRule(),
     new WithdrawBusinessRule(),
