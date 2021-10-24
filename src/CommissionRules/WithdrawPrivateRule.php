@@ -81,10 +81,10 @@ class WithdrawPrivateRule implements RuleContract
 
     private function getWeekCount(string $date)
     {
-        $startDate = new DateTime('1970-01-04');
+        $startDate = new DateTime('1970-01-05');
         $endDate = new DateTime($date);
-
         $totalDays = (int) $endDate->diff($startDate)->format("%a");
-        return 'W#' . (string) (floor($totalDays / 7) + ($totalDays % 7 ? 0 : 1));
+
+        return 'W#' . (string) (ceil($totalDays / 7) + ($totalDays % 7 ? 0 : 1));
     }
 }
