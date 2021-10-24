@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask\Service\DataReader;
 
-class CsvFormatter implements FormatterContract
+class DataFormatter
 {
     /**
      * @param array $rawData

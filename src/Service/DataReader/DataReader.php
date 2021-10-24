@@ -4,20 +4,39 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask\Service\DataReader;
 
-abstract class DataReader implements DataReaderContract
+use Sarahman\CommissionTask\Transactions\Transaction;
+
+class DataReader
 {
     /**
-     * @var FormatterContract
+     * @var DataFormatter
      */
-    protected $formatter = null;
+    private $formatter = null;
 
     /**
      * @var string
      */
-    protected $baseUrl;
+    private $baseUrl;
 
-    /**
-     * @var array
-     */
-    protected $content = [];
+    public function __construct(string $baseUrl, DataFormatter $formatter = null)
+    {
+        $this->baseUrl = $baseUrl;
+
+        if (is_null($formatter)) {
+            $formatter = new DataFormatter();
+        }
+
+        $this->formatter = $formatter;
+    }
+
+    public function getData()
+    {
+        if (file_exists($this->baseUrl) && ($handle = fopen($this->baseUrl, 'r')) !== false) {
+            while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+                yield new Transaction($this->formatter->format($data));
+            }
+
+            fclose($handle);
+        }
+    }
 }

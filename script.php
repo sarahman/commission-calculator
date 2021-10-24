@@ -6,22 +6,17 @@ use Sarahman\CommissionTask\CommissionCalculator;
 use Sarahman\CommissionTask\CommissionRules\DepositRule;
 use Sarahman\CommissionTask\CommissionRules\WithdrawBusinessRule;
 use Sarahman\CommissionTask\CommissionRules\WithdrawPrivateRule;
-use Sarahman\CommissionTask\Service\DataReader\CsvDataReader;
-use Sarahman\CommissionTask\Service\DataReader\CsvFormatter;
+use Sarahman\CommissionTask\Service\DataReader\DataFormatter;
+use Sarahman\CommissionTask\Service\DataReader\DataReader;
 use Sarahman\CommissionTask\Service\ExchangeRate\Client;
-use Sarahman\CommissionTask\Transactions\Collection as TransactionCollection;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
 $dotEnv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotEnv->load();
 
-$rawData = (new CsvDataReader(empty($argv[1]) ? $_ENV['CSV_URL'] : $argv[1]))
-    ->setFormatter(new CsvFormatter())
-    ->parseData()
-    ->getData();
+$collection = (new DataReader(empty($argv[1]) ? $_ENV['CSV_URL'] : $argv[1], new DataFormatter()));
 
-$collection = new TransactionCollection($rawData);
 $exchangeClientObj = (new Client($_ENV['EXCHANGE_RATE_URL'], $_ENV['EXCHANGE_ACCESS_KEY']));
 $rules = [
     new DepositRule(),

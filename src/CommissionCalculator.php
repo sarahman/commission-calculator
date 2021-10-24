@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Sarahman\CommissionTask;
 
 use Sarahman\CommissionTask\CommissionRules\RuleContract;
-use Sarahman\CommissionTask\Transactions\Collection;
+use Sarahman\CommissionTask\Service\DataReader\DataReader;
 use Sarahman\CommissionTask\Transactions\Transaction;
 
 class CommissionCalculator
 {
     /**
-     * @var Collection
+     * @var DataReader
      */
     private $transactions;
 
@@ -21,10 +21,10 @@ class CommissionCalculator
     private $rules = [];
 
     /**
-     * @param Collection $collection
+     * @param DataReader $collection
      * @param array $rules
      */
-    public function __construct(Collection $collection, array $rules)
+    public function __construct(DataReader $collection, array $rules)
     {
         $this->transactions = $collection;
         $this->rules = $rules;
@@ -34,7 +34,7 @@ class CommissionCalculator
     {
         $commissions = [];
 
-        $this->transactions->each(function ($transaction) use (&$commissions) {
+        foreach ($this->transactions->getData() as $transaction) {
             /** @var Transaction $transaction */
             foreach ($this->rules as $rule) {
                 /** @var RuleContract $rule */
@@ -46,7 +46,7 @@ class CommissionCalculator
             } else {
                 $commissions[] = number_format($transaction->getCommission(), 2, '.', '');
             }
-        });
+        }
 
         return $commissions;
     }
