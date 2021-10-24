@@ -50,12 +50,4 @@ class CommissionCalculator
 
         return $commissions;
     }
-
-    /**
-     * @return array
-     */
-    public function getAllTransactions(): array
-    {
-        return $this->transactions->all();
-    }
 }

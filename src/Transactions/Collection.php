@@ -22,18 +22,10 @@ class Collection
     }
 
     /**
-     * @return array
-     */
-    public function all()
-    {
-        return $this->transactionalEntities;
-    }
-
-    /**
      * @param callable $callBack
      * @return array
      */
-    public function each(callable $callBack)
+    public function each(callable $callBack): array
     {
         return array_map($callBack, $this->transactionalEntities);
     }
