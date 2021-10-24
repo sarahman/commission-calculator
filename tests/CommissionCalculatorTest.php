@@ -24,7 +24,7 @@ class CommissionCalculatorTest extends TestCase
         $rules = [
             new DepositRule(),
             new WithdrawBusinessRule(),
-            new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory())
+            new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory()),
         ];
 
         $collection = (new DataReader('', new DataFormatter()));
@@ -48,7 +48,7 @@ class CommissionCalculatorTest extends TestCase
         $rules = [
             new DepositRule(),
             new WithdrawBusinessRule(),
-            new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory())
+            new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory()),
         ];
 
         $collection = (new DataReader('./input.csv', new DataFormatter()));
@@ -88,6 +88,7 @@ class CommissionCalculatorTest extends TestCase
         return $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['getRate'])
-            ->getMock();
+            ->getMock()
+        ;
     }
 }
