@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Paysera\CommissionTask\CommissionRules;
+namespace Sarahman\CommissionTask\CommissionRules;
 
 use DateTime;
-use Paysera\CommissionTask\Service\ExchangeRate\RateContract;
-use Paysera\CommissionTask\Service\History\WeeklyHistory;
-use Paysera\CommissionTask\Transactions\Transaction;
+use Sarahman\CommissionTask\Service\ExchangeRate\RateContract;
+use Sarahman\CommissionTask\Service\History\WeeklyHistory;
+use Sarahman\CommissionTask\Transactions\Transaction;
 
 class WithdrawPrivateRule implements RuleContract
 {

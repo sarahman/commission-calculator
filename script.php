@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use Paysera\CommissionTask\CalculatorManager;
-use Paysera\CommissionTask\CommissionRules\DepositRule;
-use Paysera\CommissionTask\CommissionRules\WithdrawBusinessRule;
-use Paysera\CommissionTask\CommissionRules\WithdrawPrivateRule;
-use Paysera\CommissionTask\Service\DataReader\CsvDataReader;
-use Paysera\CommissionTask\Service\DataReader\CsvFormatter;
-use Paysera\CommissionTask\Service\ExchangeRate\RateFormatter;
-use Paysera\CommissionTask\Service\ExchangeRate\RateService;
-use Paysera\CommissionTask\Transactions\Collection as TransactionCollection;
+use Sarahman\CommissionTask\CalculatorManager;
+use Sarahman\CommissionTask\CommissionRules\DepositRule;
+use Sarahman\CommissionTask\CommissionRules\WithdrawBusinessRule;
+use Sarahman\CommissionTask\CommissionRules\WithdrawPrivateRule;
+use Sarahman\CommissionTask\Service\DataReader\CsvDataReader;
+use Sarahman\CommissionTask\Service\DataReader\CsvFormatter;
+use Sarahman\CommissionTask\Service\ExchangeRate\RateFormatter;
+use Sarahman\CommissionTask\Service\ExchangeRate\RateService;
+use Sarahman\CommissionTask\Transactions\Collection as TransactionCollection;
 
 require_once './vendor/autoload.php';
 

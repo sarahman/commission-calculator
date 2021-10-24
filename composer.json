@@ -1,16 +1,16 @@
 {
-    "name": "paysera/commission-calculator",
-    "description": "Commission Calculator for various clients of Paysera",
-    "keywords": ["paysera", "calculator", "commission", "clients"],
+    "name": "sarahman/commission-calculator",
+    "description": "Commission Calculator for various clients of Sarahman",
+    "keywords": ["calculator", "commission", "clients"],
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Paysera\\CommissionTask\\": "src"
+            "Sarahman\\CommissionTask\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Paysera\\CommissionTask\\Tests\\": "tests"
+            "Sarahman\\CommissionTask\\Tests\\": "tests"
         }
     },
     "require": {

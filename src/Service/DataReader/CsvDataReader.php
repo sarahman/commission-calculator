@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Paysera\CommissionTask\Service\DataReader;
+namespace Sarahman\CommissionTask\Service\DataReader;
 
 class CsvDataReader extends DataReader
 {

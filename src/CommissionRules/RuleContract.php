@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Paysera\CommissionTask\CommissionRules;
+namespace Sarahman\CommissionTask\CommissionRules;
 
-use Paysera\CommissionTask\Transactions\Transaction;
+use Sarahman\CommissionTask\Transactions\Transaction;
 
 interface RuleContract
 {

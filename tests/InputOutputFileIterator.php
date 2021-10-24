@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Paysera\CommissionTask\Tests;
+namespace Sarahman\CommissionTask\Tests;
 
 use Iterator;
 

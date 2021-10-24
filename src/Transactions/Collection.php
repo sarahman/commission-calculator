@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Paysera\CommissionTask\Transactions;
+namespace Sarahman\CommissionTask\Transactions;
 
 class Collection
 {

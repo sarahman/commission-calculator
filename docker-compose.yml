@@ -5,7 +5,7 @@ services:
     build:
       context: ./docker/app
       dockerfile: Dockerfile
-    image: paysera.com/commission-calculator
-    container_name: paysera-commission-calculator-app
+    image: sarahman.com/commission-calculator
+    container_name: sarahman-commission-calculator-app
     volumes:
       - .:/var/www/html

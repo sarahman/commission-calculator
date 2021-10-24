@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Paysera\CommissionTask;
+namespace Sarahman\CommissionTask;
 
-use Paysera\CommissionTask\CommissionRules\RuleContract;
-use Paysera\CommissionTask\Transactions\Collection;
-use Paysera\CommissionTask\Transactions\Transaction;
+use Sarahman\CommissionTask\CommissionRules\RuleContract;
+use Sarahman\CommissionTask\Transactions\Collection;
+use Sarahman\CommissionTask\Transactions\Transaction;
 
 class CalculatorManager
 {

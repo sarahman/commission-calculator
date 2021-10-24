@@ -1,4 +1,4 @@
-# Paysera Commission Calculator
+# Commission Calculator
 It's very simple weekly commission calculator package.
 This package read transaction from a CSV file then apply Pre define commission rules.
 
@@ -13,7 +13,7 @@ docker-composer up -d
 * Then run the following command to enter the docker container of the calculator app:
 
 ```properties
-docker exec -it paysera-commission-calculator-app bash
+docker exec -it sarahman-commission-calculator-app bash
 ```
 
 * Then run the following command

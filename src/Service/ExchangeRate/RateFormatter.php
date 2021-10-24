@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Paysera\CommissionTask\Service\ExchangeRate;
+namespace Sarahman\CommissionTask\Service\ExchangeRate;
 
 class RateFormatter implements RateFormatterContract
 {

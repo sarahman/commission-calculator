@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Paysera\CommissionTask\Tests;
+namespace Sarahman\CommissionTask\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Paysera\CommissionTask\CalculatorManager;
-use Paysera\CommissionTask\CommissionRules\DepositRule;
-use Paysera\CommissionTask\CommissionRules\WithdrawBusinessRule;
-use Paysera\CommissionTask\CommissionRules\WithdrawPrivateRule;
-use Paysera\CommissionTask\Service\DataReader\InputData;
-use Paysera\CommissionTask\Service\ExchangeRate\RateService;
-use Paysera\CommissionTask\Transactions\Collection as TransactionCollection;
+use Sarahman\CommissionTask\CalculatorManager;
+use Sarahman\CommissionTask\CommissionRules\DepositRule;
+use Sarahman\CommissionTask\CommissionRules\WithdrawBusinessRule;
+use Sarahman\CommissionTask\CommissionRules\WithdrawPrivateRule;
+use Sarahman\CommissionTask\Service\DataReader\InputData;
+use Sarahman\CommissionTask\Service\ExchangeRate\RateService;
+use Sarahman\CommissionTask\Transactions\Collection as TransactionCollection;
 
 class CalculatorManagerTest extends TestCase
 {
