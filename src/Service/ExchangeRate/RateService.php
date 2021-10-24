@@ -13,22 +13,22 @@ class RateService implements RateContract
     /**
      * @var Client
      */
-    public $client;
+    private $client;
 
     /**
      * @var RateFormatterContract
      */
-    protected $formatter = null;
+    private $formatter = null;
 
     /**
      * @var array
      */
-    public $cacheData = [];
+    private $cacheData = [];
 
     /**
      * @var string
      */
-    public $accessKey;
+    private $accessKey;
 
     public function __construct(string $baseUrl, string $accessKey)
     {

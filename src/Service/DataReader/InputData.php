@@ -6,12 +6,12 @@ namespace Sarahman\CommissionTask\Service\DataReader;
 
 class InputData
 {
-    public $transactionDate = '';
-    public $userIdentification = '';
-    public $userType = '';
-    public $operationType = '';
-    public $operationAmount = 0.00;
-    public $operationCurrency = 'EUR';
+    private $transactionDate = '';
+    private $userIdentification = '';
+    private $userType = '';
+    private $operationType = '';
+    private $operationAmount = 0.00;
+    private $operationCurrency = 'EUR';
 
     /**
      * @param string $transactionDate

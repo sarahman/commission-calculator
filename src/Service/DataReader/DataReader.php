@@ -9,7 +9,7 @@ abstract class DataReader implements DataReaderContract
     /**
      * @var FormatterContract
      */
-    public $formatter = null;
+    protected $formatter = null;
 
     /**
      * @var string
