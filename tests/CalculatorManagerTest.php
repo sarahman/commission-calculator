@@ -10,14 +10,14 @@ use Sarahman\CommissionTask\CommissionRules\DepositRule;
 use Sarahman\CommissionTask\CommissionRules\WithdrawBusinessRule;
 use Sarahman\CommissionTask\CommissionRules\WithdrawPrivateRule;
 use Sarahman\CommissionTask\Service\DataReader\InputData;
-use Sarahman\CommissionTask\Service\ExchangeRate\RateService;
+use Sarahman\CommissionTask\Service\ExchangeRate\Client;
 use Sarahman\CommissionTask\Transactions\Collection as TransactionCollection;
 
 class CalculatorManagerTest extends TestCase
 {
     public function testCommissionWhenDataIsEmpty()
     {
-        $rateService = $this->mockRateService();
+        $rateService = $this->mockExchangeRateClient();
         $rateService->method('getRate')->willReturn(1.00);
 
         $manager = new CalculatorManager();
@@ -44,7 +44,7 @@ class CalculatorManagerTest extends TestCase
      */
     public function testEveryTransactionWithMatchingInputAndOutput($transactionDate, $userId, $userType, $operationType, $amount, $currency, $commission, $rate)
     {
-        $rateService = $this->mockRateService();
+        $rateService = $this->mockExchangeRateClient();
         $rateService->method('getRate')->willReturn($rate);
 
         $collection = new TransactionCollection([
@@ -76,7 +76,7 @@ class CalculatorManagerTest extends TestCase
             $expectedCommissions[] = $transaction[6];
         }
 
-        $rateService = $this->mockRateService();
+        $rateService = $this->mockExchangeRateClient();
         $rateService->method('getRate')->will($this->returnValueMap($currencyMapping));
 
         $collection = new TransactionCollection($transactions);
@@ -123,11 +123,11 @@ class CalculatorManagerTest extends TestCase
     }
 
     /**
-     * @return RateService | \PHPUnit\Framework\MockObject\MockObject
+     * @return Client | \PHPUnit\Framework\MockObject\MockObject
      */
-    private function mockRateService()
+    private function mockExchangeRateClient()
     {
-        return $this->getMockBuilder(RateService::class)
+        return $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['getRate'])
             ->getMock();

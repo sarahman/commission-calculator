@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Sarahman\CommissionTask\Service\ExchangeRate;
 
 use Exception;
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 
-class RateService implements RateContract
+class Client implements ClientContract
 {
     /**
-     * @var Client
+     * @var GuzzleClient
      */
     private $client;
 
@@ -30,21 +30,16 @@ class RateService implements RateContract
      */
     private $accessKey;
 
-    public function __construct(string $baseUrl, string $accessKey)
+    public function __construct(string $baseUrl, string $accessKey, RateFormatterContract $formatter = null)
     {
-        $this->client = new Client(['base_uri' => $baseUrl]);
+        $this->client = new GuzzleClient(['base_uri' => $baseUrl]);
         $this->accessKey = $accessKey;
-    }
 
-    /**
-     * @param RateFormatterContract $formatter
-     * @return $this
-     */
-    public function setFormatter(RateFormatterContract $formatter)
-    {
+        if (is_null($formatter)) {
+            $formatter = new RateFormatter();
+        }
+
         $this->formatter = $formatter;
-
-        return $this;
     }
 
     /**

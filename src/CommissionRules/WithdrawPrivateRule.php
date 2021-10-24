@@ -5,21 +5,21 @@ declare(strict_types=1);
 namespace Sarahman\CommissionTask\CommissionRules;
 
 use DateTime;
-use Sarahman\CommissionTask\Service\ExchangeRate\RateContract;
+use Sarahman\CommissionTask\Service\ExchangeRate\ClientContract;
 use Sarahman\CommissionTask\Service\History\WeeklyHistory;
 use Sarahman\CommissionTask\Transactions\Transaction;
 
 class WithdrawPrivateRule implements RuleContract
 {
     private $historyManager;
-    private $exchangeRateService;
+    private $exchangeClient;
     private $weeklyFreeTransactionCount = 3;
     private $weeklyChargeFreeAmount = 1000;
     private $commissionFee = 0.3;
 
-    public function __construct(RateContract $exchangeRateService, WeeklyHistory $historyManager = null)
+    public function __construct(ClientContract $exchangeClient, WeeklyHistory $historyManager = null)
     {
-        $this->exchangeRateService = $exchangeRateService;
+        $this->exchangeClient = $exchangeClient;
 
         if (is_null($historyManager)) {
             $historyManager = new WeeklyHistory();
@@ -45,7 +45,7 @@ class WithdrawPrivateRule implements RuleContract
             if ($transaction->isCurrencyEuro()) {
                 $rate = 1.0;
             } else {
-                $rate = $this->exchangeRateService->getRate($transaction->getCurrency());
+                $rate = $this->exchangeClient->getRate($transaction->getCurrency());
             }
 
             $euroAmount = $transaction->getAmount() / $rate;

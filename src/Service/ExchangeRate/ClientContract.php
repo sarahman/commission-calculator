@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask\Service\ExchangeRate;
 
-interface RateContract
+interface ClientContract
 {
     /**
      * @param string $currency
@@ -12,10 +12,4 @@ interface RateContract
      * @return float
      */
     public function getRate(string $currency, $cache = true): float;
-
-    /**
-     * @param RateFormatterContract $driver
-     * @return mixed
-     */
-    public function setFormatter(RateFormatterContract $driver);
 }
