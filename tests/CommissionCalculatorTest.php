@@ -72,7 +72,7 @@ class CommissionCalculatorTest extends TestCase
         $transactions = [];
         $expectedCommissions = [];
         $currencyMapping = [];
-        foreach (new InputOutputFileIterator('./input.csv', './output.csv') as $transaction) {
+        foreach (new InputOutputFileIterator('./input.csv', './tests/data/output.csv') as $transaction) {
             $transactions[] = $this->getSampleTransaction($transaction[0], $transaction[1], $transaction[2], $transaction[3], $transaction[4], $transaction[5]);
 
             $currencyMapping[] = [$transaction[5], true, $transaction[7]];
@@ -104,7 +104,7 @@ class CommissionCalculatorTest extends TestCase
 
     public function dataProviderForAddTesting(): InputOutputFileIterator
     {
-        return new InputOutputFileIterator('./input.csv', './output2.csv');
+        return new InputOutputFileIterator('./input.csv', './tests/data/output2.csv');
     }
 
     /**
