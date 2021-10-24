@@ -43,10 +43,8 @@
         "script": "@php script.php input.csv",
         "phpcs": "phpcs --standard=PSR12 ./src",
         "phpunit": "phpunit",
-        "fix-cs": "php-cs-fixer fix",
-        "test-cs": "php-cs-fixer fix --dry-run -v",
         "paysera-fix-cs": "paysera-php-cs-fixer fix",
         "paysera-test-cs": "paysera-php-cs-fixer fix --dry-run -v",
-        "test": ["@phpunit", "@test-cs"]
+        "test": ["@phpunit", "@paysera-test-cs"]
     }
 }
