@@ -15,7 +15,6 @@
     },
     "require": {
         "php": ">=7.0",
-        "ext-bcmath": "*",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^6.5",
         "vlucas/phpdotenv": "^4.2"
