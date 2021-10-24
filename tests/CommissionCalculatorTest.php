@@ -9,8 +9,7 @@ use Sarahman\CommissionTask\CommissionCalculator;
 use Sarahman\CommissionTask\CommissionRule\DepositRule;
 use Sarahman\CommissionTask\CommissionRule\WithdrawBusinessRule;
 use Sarahman\CommissionTask\CommissionRule\WithdrawPrivateRule;
-use Sarahman\CommissionTask\Service\DataReader\DataFormatter;
-use Sarahman\CommissionTask\Service\DataReader\DataReader;
+use Sarahman\CommissionTask\Service\DataReader\CsvDataReader;
 use Sarahman\CommissionTask\Service\ExchangeRate\Client;
 use Sarahman\CommissionTask\Service\History\WeeklyHistory;
 
@@ -27,12 +26,12 @@ class CommissionCalculatorTest extends TestCase
             new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory()),
         ];
 
-        $collection = (new DataReader('', new DataFormatter()));
+        $collection = (new CsvDataReader('./tests/data/empty.csv'));
 
         $calculator = new CommissionCalculator($collection, $rules);
         $commissions = $calculator->process();
 
-        $this->assertInternalType('array', $commissions);
+        $this->assertIsArray($commissions);
         $this->assertEquals(0, count($commissions));
     }
 
@@ -51,12 +50,12 @@ class CommissionCalculatorTest extends TestCase
             new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory()),
         ];
 
-        $collection = (new DataReader('./input.csv', new DataFormatter()));
+        $collection = (new CsvDataReader('./input.csv'));
 
         $calculator = new CommissionCalculator($collection, $rules);
         $commissions = $calculator->process();
 
-        $this->assertInternalType('array', $commissions);
+        $this->assertIsArray($commissions);
         $this->assertEquals(13, count($commissions));
 
         $expectedCommissions = [
@@ -87,7 +86,7 @@ class CommissionCalculatorTest extends TestCase
     {
         return $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getRate'])
+            ->onlyMethods(['getRate'])
             ->getMock()
         ;
     }

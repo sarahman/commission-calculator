@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sarahman\CommissionTask;
 
 use Sarahman\CommissionTask\CommissionRule\RuleContract;
-use Sarahman\CommissionTask\Service\DataReader\DataReader;
+use Sarahman\CommissionTask\Service\DataReader\CsvDataReader;
 use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
 class CommissionCalculator
@@ -13,7 +13,7 @@ class CommissionCalculator
     private $reader;
     private $rules;
 
-    public function __construct(DataReader $reader, array $rules)
+    public function __construct(CsvDataReader $reader, array $rules)
     {
         $this->reader = $reader;
         $this->rules = $rules;

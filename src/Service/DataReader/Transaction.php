@@ -41,14 +41,14 @@ class Transaction
      */
     private $commission;
 
-    public function __construct(InputData $obj)
+    public function __construct(array $data)
     {
-        $this->transactionDate = $obj->getTransactionDate();
-        $this->userIdentification = $obj->getUserIdentification();
-        $this->userType = $obj->getUserType();
-        $this->operationType = $obj->getOperationType();
-        $this->operationAmount = $obj->getOperationAmount();
-        $this->operationCurrency = $obj->getOperationCurrency();
+        $this->transactionDate = isset($data[0]) ? $data[0] : '';
+        $this->userIdentification = isset($data[1]) ? $data[1] : '';
+        $this->userType = isset($data[2]) ? $data[2] : '';
+        $this->operationType = isset($data[3]) ? $data[3] : '';
+        $this->operationAmount = isset($data[4]) ? (float) ($data[4]) : 0.00;
+        $this->operationCurrency = isset($data[5]) ? $data[5] : '';
         $this->commission = 0.00;
     }
 
