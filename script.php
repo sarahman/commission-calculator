@@ -31,6 +31,6 @@ $rules = [
     new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory())
 ];
 
-$commissions = (new CommissionCalculator($collection, $rules))->process();
+$commissions = (new CommissionCalculator($collection, $rules))->calculate();
 
 print join(PHP_EOL, $commissions) . PHP_EOL;

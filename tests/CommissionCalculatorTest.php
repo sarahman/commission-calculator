@@ -29,7 +29,7 @@ class CommissionCalculatorTest extends TestCase
         $collection = (new CsvDataReader('./tests/data/empty.csv'));
 
         $calculator = new CommissionCalculator($collection, $rules);
-        $commissions = $calculator->process();
+        $commissions = $calculator->calculate();
 
         $this->assertIsArray($commissions);
         $this->assertEquals(0, count($commissions));
@@ -39,9 +39,9 @@ class CommissionCalculatorTest extends TestCase
     {
         $exchangeClientObj = $this->mockExchangeRateClient();
         $exchangeClientObj->method('getRate')->will($this->returnValueMap([
-            ['EUR', true, 1.0],
-            ['USD', true, 1.1497],
-            ['JPY', true, 129.53],
+            ['EUR', 1.0],
+            ['USD', 1.1497],
+            ['JPY', 129.53],
         ]));
 
         $rules = [
@@ -53,7 +53,7 @@ class CommissionCalculatorTest extends TestCase
         $collection = (new CsvDataReader('./input.csv'));
 
         $calculator = new CommissionCalculator($collection, $rules);
-        $commissions = $calculator->process();
+        $commissions = $calculator->calculate();
 
         $this->assertIsArray($commissions);
         $this->assertEquals(13, count($commissions));

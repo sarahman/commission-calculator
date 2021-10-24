@@ -52,16 +52,6 @@ class Transaction
         $this->commission = 0.00;
     }
 
-    public function isCurrencyEuro(): bool
-    {
-        return 'EUR' === $this->operationCurrency;
-    }
-
-    public function isCurrencyJpy(): bool
-    {
-        return 'JPY' === $this->operationCurrency;
-    }
-
     public function getAmount(): float
     {
         return $this->operationAmount;
@@ -77,6 +67,11 @@ class Transaction
         return $this->transactionDate;
     }
 
+    public function getOperationType(): string
+    {
+        return $this->operationType;
+    }
+
     public function getCommission(): float
     {
         return $this->commission;
@@ -84,35 +79,16 @@ class Transaction
 
     public function setCommission(float $commission)
     {
-        if ($this->isCurrencyJpy()) {
-            $this->commission = ceil($commission);
-        } else {
-            $this->commission = $commission;
-        }
-    }
-
-    public function isDeposit(): bool
-    {
-        return 'deposit' === $this->operationType;
-    }
-
-    public function isWithdraw(): bool
-    {
-        return 'withdraw' === $this->operationType;
-    }
-
-    public function isPrivateClient(): bool
-    {
-        return 'private' === $this->userType;
-    }
-
-    public function isBusinessClient(): bool
-    {
-        return 'business' === $this->userType;
+        $this->commission = $commission;
     }
 
     public function getUserIdentification()
     {
         return $this->userIdentification;
+    }
+
+    public function getUserType(): string
+    {
+        return $this->userType;
     }
 }

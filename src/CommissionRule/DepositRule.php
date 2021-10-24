@@ -10,7 +10,7 @@ class DepositRule implements RuleContract
 {
     public function applyRule(Transaction $transaction): Transaction
     {
-        if ($transaction->isDeposit()) {
+        if ('deposit' === $transaction->getOperationType()) {
             $transaction->setCommission((0.03 / 100) * $transaction->getAmount());
         }
 

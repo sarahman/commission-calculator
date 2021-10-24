@@ -40,7 +40,7 @@ class WithdrawPrivateRule implements RuleContract
 
     public function applyRule(Transaction $transaction): Transaction
     {
-        if ($transaction->isWithdraw() && $transaction->isPrivateClient()) {
+        if ('withdraw' === $transaction->getOperationType() && 'private' === $transaction->getUserType()) {
             $index = sprintf(
                 '%s:%s',
                 $transaction->getUserIdentification(),
@@ -52,7 +52,7 @@ class WithdrawPrivateRule implements RuleContract
                 $weeklyHistory = ['totalAmount' => 0.00, 'transactionCount' => 0];
             }
 
-            if ($transaction->isCurrencyEuro()) {
+            if ('EUR' === $transaction->getCurrency()) {
                 $rate = 1.0;
             } else {
                 $rate = $this->exchangeClient->getRate($transaction->getCurrency());

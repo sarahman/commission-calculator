@@ -19,24 +19,33 @@ class CommissionCalculator
         $this->rules = $rules;
     }
 
-    public function process(): array
+    public function calculate(): array
     {
         $commissions = [];
 
         foreach ($this->reader->getData() as $transaction) {
-            /** @var Transaction $transaction */
-            foreach ($this->rules as $rule) {
-                /** @var RuleContract $rule */
-                $rule->applyRule($transaction);
-            }
-
-            if ($transaction->isCurrencyJpy()) {
-                $commissions[] = $transaction->getCommission();
-            } else {
-                $commissions[] = number_format($transaction->getCommission(), 2, '.', '');
-            }
+            $commissions[] = $this->getTransactionalCommission($transaction);
         }
 
         return $commissions;
+    }
+
+    private function getTransactionalCommission(Transaction $transaction): string
+    {
+        foreach ($this->rules as $rule) {
+            /** @var RuleContract $rule */
+            $rule->applyRule($transaction);
+        }
+
+        return $this->formatOutput($transaction);
+    }
+
+    private function formatOutput(Transaction $transaction): string
+    {
+        if ('JPY' === $transaction->getCurrency()) {
+            return (string) ceil($transaction->getCommission());
+        }
+
+        return number_format($transaction->getCommission(), 2, '.', '');
     }
 }
