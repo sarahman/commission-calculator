@@ -6,6 +6,6 @@ namespace Sarahman\CommissionTask\Service\ExchangeRate;
 
 use RuntimeException;
 
-class BadResponseException extends RuntimeException
+class ClientException extends RuntimeException
 {
 }

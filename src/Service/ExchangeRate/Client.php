@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sarahman\CommissionTask\Service\ExchangeRate;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Client
 {
@@ -12,44 +13,47 @@ class Client
     private $accessKey;
     private $formatter;
 
-    /**
-     * @var array
-     */
-    private $cacheData;
-
     public function __construct(string $baseUrl, string $accessKey, RateFormatter $formatter)
     {
         $this->client = new GuzzleClient(['base_uri' => $baseUrl]);
         $this->accessKey = $accessKey;
         $this->formatter = $formatter;
-        $this->cacheData = [];
     }
 
-    public function getRate(string $currency, $cache = true): float
+    public function getRate(string $currency): float
     {
-        if (!$cache || 0 === count($this->cacheData)) {
-            $response = $this->client->request('GET', 'latest', [
-                'query' => [
-                    'access_key' => $this->accessKey,
-                ],
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                ],
-            ]);
-
-            if (200 !== $response->getStatusCode()) {
-                throw new BadResponseException('Invalid data is provided from the rate exchange service!');
-            }
-
-            $body = $response->getBody()->getContents();
-
-            if ($this->isJson($body)) {
-                $rates = json_decode($body, true);
-                $this->cacheData = $rates;
-            }
+        try {
+            $response = $this->client->request('GET', 'latest', $this->getRequestOptions());
+        } catch (GuzzleException $exception) {
+            throw new ClientException('Internal server error of the rate exchange service!', 500, $exception);
         }
 
-        return $this->formatter->format($this->cacheData, $currency);
+        if (200 !== $response->getStatusCode()) {
+            throw new ClientException('Invalid data is provided from the rate exchange service!');
+        }
+
+        $body = $response->getBody()->getContents();
+
+        if ($this->isJson($body)) {
+            $rates = json_decode($body, true);
+            $cacheData = $rates;
+        } else {
+            $cacheData = [];
+        }
+
+        return $this->formatter->format($cacheData, $currency);
+    }
+
+    private function getRequestOptions(): array
+    {
+        return [
+            'query' => [
+                'access_key' => $this->accessKey,
+            ],
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+        ];
     }
 
     private function isJson(string $string): bool
