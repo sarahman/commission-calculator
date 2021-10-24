@@ -1,10 +1,10 @@
-FROM php:7.0-fpm
+FROM php:7.4-alpine
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
-RUN apt-get update && apt-get install -y curl git zlib1g-dev
+WORKDIR /var/www/html
 
-RUN docker-php-ext-install zip
+RUN apk update && apk add curl git zip unzip
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
