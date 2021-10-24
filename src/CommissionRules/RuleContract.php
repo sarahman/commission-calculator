@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask\CommissionRules;
 
-use Sarahman\CommissionTask\Transactions\Transaction;
+use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
 interface RuleContract
 {

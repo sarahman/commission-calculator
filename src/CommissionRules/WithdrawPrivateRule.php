@@ -7,7 +7,7 @@ namespace Sarahman\CommissionTask\CommissionRules;
 use DateTime;
 use Sarahman\CommissionTask\Service\ExchangeRate\ClientContract;
 use Sarahman\CommissionTask\Service\History\WeeklyHistory;
-use Sarahman\CommissionTask\Transactions\Transaction;
+use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
 class WithdrawPrivateRule implements RuleContract
 {

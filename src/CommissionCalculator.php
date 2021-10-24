@@ -6,7 +6,7 @@ namespace Sarahman\CommissionTask;
 
 use Sarahman\CommissionTask\CommissionRules\RuleContract;
 use Sarahman\CommissionTask\Service\DataReader\DataReader;
-use Sarahman\CommissionTask\Transactions\Transaction;
+use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
 class CommissionCalculator
 {

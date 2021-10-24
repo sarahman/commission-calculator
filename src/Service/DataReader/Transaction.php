@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sarahman\CommissionTask\Transactions;
+namespace Sarahman\CommissionTask\Service\DataReader;
 
 use Sarahman\CommissionTask\Service\DataReader\InputData;
 
