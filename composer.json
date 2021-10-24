@@ -20,14 +20,23 @@
         "vlucas/phpdotenv": "^4.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.5",
-        "friendsofphp/php-cs-fixer": "2.16"
+        "paysera/lib-php-cs-fixer-config": "^2.4",
+        "phpunit/phpunit": "^6.5"
     },
     "config": {
         "sort-packages": true,
         "bin-dir": "bin"
     },
     "scripts": {
+        "post-root-package-install": [
+            "@create-env"
+        ],
+        "post-install-cmd": [
+            "Paysera\\PhpCsFixerConfig\\Composer\\PhpCsFixerConfigProvider::copyPhpCs"
+        ],
+        "post-update-cmd": [
+            "Paysera\\PhpCsFixerConfig\\Composer\\PhpCsFixerConfigProvider::copyPhpCs"
+        ],
         "create-env": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
@@ -36,6 +45,8 @@
         "phpunit": "phpunit",
         "fix-cs": "php-cs-fixer fix",
         "test-cs": "php-cs-fixer fix --dry-run -v",
+        "paysera-fix-cs": "paysera-php-cs-fixer fix",
+        "paysera-test-cs": "paysera-php-cs-fixer fix --dry-run -v",
         "test": ["@phpunit", "@test-cs"]
     }
 }

@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 include __DIR__ . '/vendor/autoload.php';
 
+return Paysera\PhpCsFixerConfig\Config\PayseraConventionsConfig::create()
+    ->setDefaultFinder(['src'], ['Overwritten'])
+    ->setRecommendedRules();
+
 $finder = PhpCsFixer\Finder::create()
-    ->in(['src'])
-;
+    ->in(['src']);
 
 return PhpCsFixer\Config::create()
     ->setRules([
@@ -19,5 +22,4 @@ return PhpCsFixer\Config::create()
     ])
     ->setFinder($finder)
     ->setUsingCache(false)
-    ->setRiskyAllowed(true)
-;
+    ->setRiskyAllowed(true);
