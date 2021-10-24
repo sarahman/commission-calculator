@@ -4,16 +4,17 @@ This package read transaction from a CSV file then apply Pre define commission r
 
 **How to install:**
 
-* After cloning the project and installing `docker` and `docker-compose`, run
+* After cloning the project and installing `docker`, run
 
 ```properties
-docker-composer up -d
+docker build --no-cache docker/app -t sarahman.com/commission-calculator
+docker run -tdv "$(pwd):/var/www/html" --name sarahman-commission-calculator-app sarahman.com/commission-calculator
 ```
 
 * Then run the following command to enter the docker container of the calculator app:
 
 ```properties
-docker exec -it sarahman-commission-calculator-app bash
+docker exec -it sarahman-commission-calculator-app sh
 ```
 
 * Then run the following command
