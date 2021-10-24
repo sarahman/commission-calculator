@@ -45,7 +45,11 @@ class WithdrawPrivateRule implements RuleContract
     public function applyRule(Transaction $transaction): Transaction
     {
         if ($transaction->isWithdraw() && $transaction->isPrivateClient()) {
-            $index = sprintf('%s:%s', $transaction->getUserIdentification(), $this->getWeekCount($transaction->getTransactionDate()));
+            $index = sprintf(
+                '%s:%s',
+                $transaction->getUserIdentification(),
+                $this->getWeekCount($transaction->getTransactionDate())
+            );
             $weeklyHistory = $this->historyManager->getData($index);
 
             if (0 === count($weeklyHistory)) {
@@ -60,9 +64,15 @@ class WithdrawPrivateRule implements RuleContract
 
             $euroAmount = $transaction->getAmount() / $rate;
 
-            if ($weeklyHistory['transactionCount'] >= $this->weeklyFreeTransactionCount || $weeklyHistory['totalAmount'] >= $this->weeklyChargeFreeAmount) {
+            if (
+                $weeklyHistory['transactionCount'] >= $this->weeklyFreeTransactionCount
+                || $weeklyHistory['totalAmount'] >= $this->weeklyChargeFreeAmount
+            ) {
                 $chargeableAmount = $euroAmount;
-            } elseif ($weeklyHistory['transactionCount'] < $this->weeklyFreeTransactionCount && $weeklyHistory['totalAmount'] + $euroAmount <= $this->weeklyChargeFreeAmount) {
+            } elseif (
+                $weeklyHistory['transactionCount'] < $this->weeklyFreeTransactionCount
+                && $weeklyHistory['totalAmount'] + $euroAmount <= $this->weeklyChargeFreeAmount
+            ) {
                 $chargeableAmount = 0.00;
             } else {
                 $chargeableAmount = abs(($weeklyHistory['totalAmount'] + $euroAmount) - $this->weeklyChargeFreeAmount);
