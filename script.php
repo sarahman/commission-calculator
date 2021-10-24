@@ -12,7 +12,7 @@ use Sarahman\CommissionTask\Service\ExchangeRate\RateFormatter;
 use Sarahman\CommissionTask\Service\ExchangeRate\RateService;
 use Sarahman\CommissionTask\Transactions\Collection as TransactionCollection;
 
-require_once './vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 $dotEnv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotEnv->load();
