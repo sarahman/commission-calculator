@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask\Service\ExchangeRate;
 
-class RateFormatter implements RateFormatterContract
+class RateFormatter
 {
     /**
      * @param array $rates

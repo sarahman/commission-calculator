@@ -6,19 +6,20 @@ namespace Sarahman\CommissionTask\Service\ExchangeRate;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
+use Exception;
 
-class Client implements ClientContract
+class Client
 {
     private $client;
+    private $accessKey;
     private $formatter;
 
     /**
      * @var array
      */
     private $cacheData;
-    private $accessKey;
 
-    public function __construct(string $baseUrl, string $accessKey, RateFormatterContract $formatter)
+    public function __construct(string $baseUrl, string $accessKey, RateFormatter $formatter)
     {
         $this->client = new GuzzleClient(['base_uri' => $baseUrl]);
         $this->accessKey = $accessKey;
@@ -30,6 +31,7 @@ class Client implements ClientContract
      * @param string $currency
      * @param bool $cache
      * @return float
+     * @throws BadResponseException
      * @throws GuzzleException
      * @throws Exception
      */

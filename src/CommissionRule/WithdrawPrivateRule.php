@@ -6,7 +6,7 @@ namespace Sarahman\CommissionTask\CommissionRule;
 
 use DateTime;
 use Sarahman\CommissionTask\Service\DataReader\Transaction;
-use Sarahman\CommissionTask\Service\ExchangeRate\ClientContract;
+use Sarahman\CommissionTask\Service\ExchangeRate\Client;
 use Sarahman\CommissionTask\Service\History\WeeklyHistory;
 
 class WithdrawPrivateRule implements RuleContract
@@ -29,7 +29,7 @@ class WithdrawPrivateRule implements RuleContract
      */
     private $commissionFee;
 
-    public function __construct(ClientContract $exchangeClient, WeeklyHistory $historyManager)
+    public function __construct(Client $exchangeClient, WeeklyHistory $historyManager)
     {
         $this->exchangeClient = $exchangeClient;
         $this->historyManager = $historyManager;
