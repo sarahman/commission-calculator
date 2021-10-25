@@ -42,7 +42,8 @@ class CommissionCalculatorTest extends TestCase
             new WithdrawPrivateRule($this->exchangeClientObj, new WeeklyHistory()),
         ];
 
-        $commissions = (new CommissionCalculator($collection, $rules))->calculate();
+        $calculator = new CommissionCalculator($collection, $rules);
+        $commissions = $calculator->calculate();
 
         $this->assertIsArray($commissions);
         $this->assertEquals(0, count($commissions));
@@ -63,7 +64,8 @@ class CommissionCalculatorTest extends TestCase
             new WithdrawPrivateRule($this->exchangeClientObj, new WeeklyHistory()),
         ];
 
-        $commissions = (new CommissionCalculator($collection, $rules))->calculate();
+        $calculator = new CommissionCalculator($collection, $rules);
+        $commissions = $calculator->calculate();
 
         $this->assertIsArray($commissions);
         $this->assertEquals(13, count($commissions));

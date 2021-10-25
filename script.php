@@ -27,9 +27,10 @@ $exchangeClientObj = new Client($_ENV['EXCHANGE_RATE_URL'], $_ENV['EXCHANGE_ACCE
 $rules = [
     new DepositRule(),
     new WithdrawBusinessRule(),
-    new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory())
+    new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory()),
 ];
 
-$commissions = (new CommissionCalculator($collection, $rules))->calculate();
+$calculator = new CommissionCalculator($collection, $rules);
+$commissions = $calculator->calculate();
 
 print join(PHP_EOL, $commissions) . PHP_EOL;
