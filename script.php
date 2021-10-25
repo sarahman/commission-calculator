@@ -30,6 +30,11 @@ $rules = [
 ];
 
 $calculator = new CommissionCalculator($collection, $rules);
-$commissions = $calculator->calculate();
 
-print join(PHP_EOL, $commissions) . PHP_EOL;
+try {
+    $commissions = $calculator->calculate();
+} catch (Throwable $exception) {
+    exit($exception->getMessage() . PHP_EOL);
+}
+
+echo join(PHP_EOL, $commissions) . PHP_EOL;
