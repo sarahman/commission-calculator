@@ -23,11 +23,11 @@ class Client
         try {
             $response = $this->client->request('GET', 'latest', $this->getRequestOptions());
         } catch (GuzzleException $exception) {
-            throw new ClientException('Internal server error of the rate exchange service!', 500, $exception);
+            throw new CurrencyExchangeApiException('Internal server error of the rate exchange service!', 500, $exception);
         }
 
         if (200 !== $response->getStatusCode()) {
-            throw new ClientException('Invalid data is provided from the rate exchange service!');
+            throw new CurrencyExchangeApiException('Invalid data is provided from the rate exchange service!');
         }
 
         $body = $response->getBody()->getContents();

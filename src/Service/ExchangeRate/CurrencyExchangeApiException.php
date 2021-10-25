@@ -6,6 +6,6 @@ namespace Sarahman\CommissionTask\Service\ExchangeRate;
 
 use RuntimeException;
 
-class ClientException extends RuntimeException
+class CurrencyExchangeApiException extends RuntimeException
 {
 }
