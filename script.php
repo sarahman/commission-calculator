@@ -8,7 +8,6 @@ use Sarahman\CommissionTask\CommissionRule\WithdrawBusinessRule;
 use Sarahman\CommissionTask\CommissionRule\WithdrawPrivateRule;
 use Sarahman\CommissionTask\Service\DataReader\CsvDataReader;
 use Sarahman\CommissionTask\Service\ExchangeRate\Client;
-use Sarahman\CommissionTask\Service\ExchangeRate\RateFormatter;
 use Sarahman\CommissionTask\Service\History\WeeklyHistory;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -23,7 +22,7 @@ if (!file_exists($source)) {
 }
 
 $collection = new CsvDataReader($source);
-$exchangeClientObj = new Client($_ENV['EXCHANGE_RATE_URL'], $_ENV['EXCHANGE_ACCESS_KEY'], new RateFormatter());
+$exchangeClientObj = new Client($_ENV['EXCHANGE_RATE_URL'], $_ENV['EXCHANGE_ACCESS_KEY']);
 $rules = [
     new DepositRule(),
     new WithdrawBusinessRule(),

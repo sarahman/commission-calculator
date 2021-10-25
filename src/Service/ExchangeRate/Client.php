@@ -11,13 +11,11 @@ class Client
 {
     private $client;
     private $accessKey;
-    private $formatter;
 
-    public function __construct(string $baseUrl, string $accessKey, RateFormatter $formatter)
+    public function __construct(string $baseUrl, string $accessKey)
     {
         $this->client = new GuzzleClient(['base_uri' => $baseUrl]);
         $this->accessKey = $accessKey;
-        $this->formatter = $formatter;
     }
 
     public function getRate(string $currency): float
@@ -36,12 +34,11 @@ class Client
 
         if ($this->isJson($body)) {
             $rates = json_decode($body, true);
-            $cacheData = $rates;
         } else {
-            $cacheData = [];
+            $rates = [];
         }
 
-        return $this->formatter->format($cacheData, $currency);
+        return $this->format($rates, $currency);
     }
 
     private function getRequestOptions(): array
@@ -61,5 +58,14 @@ class Client
         json_decode($string);
 
         return json_last_error() === JSON_ERROR_NONE;
+    }
+
+    public function format(array $rates, string $currency): float
+    {
+        if (!isset($rates['rates']) || !isset($rates['rates'][$currency])) {
+            return 0.00;
+        }
+
+        return (float) ($rates['rates'][$currency]);
     }
 }
