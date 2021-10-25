@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask\Service\ExchangeRate;
 
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Client
 {
-    private $client;
-    private $accessKey;
+    private ClientInterface $client;
+    private string $accessKey;
 
     public function __construct(ClientInterface $client, string $accessKey)
     {
@@ -23,7 +23,7 @@ class Client
         try {
             $response = $this->client->request('GET', 'latest', $this->getRequestOptions());
         } catch (GuzzleException $exception) {
-            throw new CurrencyExchangeApiException('Internal server error of the rate exchange service!', 500, $exception);
+            throw new CurrencyExchangeApiException('Internal server error of rate exchange service!', 500, $exception);
         }
 
         if (200 !== $response->getStatusCode()) {
@@ -31,11 +31,10 @@ class Client
         }
 
         $body = $response->getBody()->getContents();
+        $rates = [];
 
         if ($this->isJson($body)) {
             $rates = json_decode($body, true);
-        } else {
-            $rates = [];
         }
 
         return $this->format($rates, $currency);

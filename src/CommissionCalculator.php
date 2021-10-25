@@ -10,8 +10,8 @@ use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
 class CommissionCalculator
 {
-    private $reader;
-    private $rules;
+    private CsvDataReader $reader;
+    private array $rules;
 
     public function __construct(CsvDataReader $reader, array $rules)
     {

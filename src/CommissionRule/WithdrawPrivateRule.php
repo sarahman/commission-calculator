@@ -10,31 +10,15 @@ use Sarahman\CommissionTask\Service\ExchangeRate\Client;
 
 class WithdrawPrivateRule implements RuleContract
 {
-    private $exchangeClient;
+    private Client $currencyExchangeClient;
+    private int $weeklyFreeTransactionCount;
+    private float $weeklyChargeFreeAmount;
+    private float $commissionFee;
+    private array $history;
 
-    /**
-     * @var int
-     */
-    private $weeklyFreeTransactionCount;
-
-    /**
-     * @var float
-     */
-    private $weeklyChargeFreeAmount;
-
-    /**
-     * @var float
-     */
-    private $commissionFee;
-
-    /**
-     * @var array
-     */
-    private $history;
-
-    public function __construct(Client $exchangeClient)
+    public function __construct(Client $currencyExchangeClient)
     {
-        $this->exchangeClient = $exchangeClient;
+        $this->currencyExchangeClient = $currencyExchangeClient;
         $this->weeklyFreeTransactionCount = 3;
         $this->weeklyChargeFreeAmount = 1000;
         $this->commissionFee = 0.3;
@@ -59,7 +43,7 @@ class WithdrawPrivateRule implements RuleContract
             if ('EUR' === $transaction->getCurrency()) {
                 $rate = 1.0;
             } else {
-                $rate = $this->exchangeClient->getRate($transaction->getCurrency());
+                $rate = $this->currencyExchangeClient->getRate($transaction->getCurrency());
             }
 
             $euroAmount = $transaction->getAmount() / $rate;
@@ -85,14 +69,12 @@ class WithdrawPrivateRule implements RuleContract
         return $transaction;
     }
 
-    private function updateHistory(string $index, array $weeklyHistory, float $amount): bool
+    private function updateHistory(string $index, array $weeklyHistory, float $amount): void
     {
         $weeklyHistory['totalAmount'] += $amount;
         $weeklyHistory['transactionCount']++;
 
         $this->history[$index] = $weeklyHistory;
-
-        return true;
     }
 
     private function getWeekCount(string $date): string
