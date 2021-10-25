@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask\Tests;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Sarahman\CommissionTask\CommissionCalculator;
 use Sarahman\CommissionTask\CommissionRule\DepositRule;
@@ -15,9 +16,9 @@ use Sarahman\CommissionTask\Service\ExchangeRate\Client;
 class CommissionCalculatorTest extends TestCase
 {
     /**
-     * @var Client | \PHPUnit\Framework\MockObject\MockObject
+     * @var Client
      */
-    private $exchangeClientObj;
+    private MockObject $exchangeClientObj;
 
     public function setUp(): void
     {
@@ -28,24 +29,6 @@ class CommissionCalculatorTest extends TestCase
             ->onlyMethods(['getRate'])
             ->getMock()
         ;
-    }
-
-    public function testCommissionWhenDataIsEmpty()
-    {
-        $this->exchangeClientObj->method('getRate')->willReturn(1.00);
-
-        $collection = new CsvDataReader('./tests/data/empty.csv');
-        $rules = [
-            new DepositRule(),
-            new WithdrawBusinessRule(),
-            new WithdrawPrivateRule($this->exchangeClientObj),
-        ];
-
-        $calculator = new CommissionCalculator($collection, $rules);
-        $commissions = $calculator->calculate();
-
-        $this->assertIsArray($commissions);
-        $this->assertEquals(0, count($commissions));
     }
 
     public function testAllTransactionsWithMatchingInputAndOutput()
