@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask\Service\ExchangeRate;
 
-use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\ClientInterface;
 
 class Client
 {
     private $client;
     private $accessKey;
 
-    public function __construct(string $baseUrl, string $accessKey)
+    public function __construct(ClientInterface $client, string $accessKey)
     {
-        $this->client = new GuzzleClient(['base_uri' => $baseUrl]);
+        $this->client = $client;
         $this->accessKey = $accessKey;
     }
 

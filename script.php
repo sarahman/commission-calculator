@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use GuzzleHttp\Client as GuzzleHttpClient;
 use Sarahman\CommissionTask\CommissionCalculator;
 use Sarahman\CommissionTask\CommissionRule\DepositRule;
 use Sarahman\CommissionTask\CommissionRule\WithdrawBusinessRule;
@@ -22,7 +23,7 @@ if (!file_exists($source)) {
 }
 
 $collection = new CsvDataReader($source);
-$exchangeClientObj = new Client($_ENV['EXCHANGE_RATE_URL'], $_ENV['EXCHANGE_ACCESS_KEY']);
+$exchangeClientObj = new Client(new GuzzleHttpClient(['base_uri' => $_ENV['EXCHANGE_RATE_URL']]), $_ENV['EXCHANGE_ACCESS_KEY']);
 $rules = [
     new DepositRule(),
     new WithdrawBusinessRule(),
