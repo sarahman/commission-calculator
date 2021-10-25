@@ -9,7 +9,6 @@ use Sarahman\CommissionTask\CommissionRule\WithdrawBusinessRule;
 use Sarahman\CommissionTask\CommissionRule\WithdrawPrivateRule;
 use Sarahman\CommissionTask\Service\DataReader\CsvDataReader;
 use Sarahman\CommissionTask\Service\ExchangeRate\Client;
-use Sarahman\CommissionTask\Service\History\WeeklyHistory;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -27,7 +26,7 @@ $exchangeClientObj = new Client(new GuzzleHttpClient(['base_uri' => $_ENV['EXCHA
 $rules = [
     new DepositRule(),
     new WithdrawBusinessRule(),
-    new WithdrawPrivateRule($exchangeClientObj, new WeeklyHistory()),
+    new WithdrawPrivateRule($exchangeClientObj),
 ];
 
 $calculator = new CommissionCalculator($collection, $rules);

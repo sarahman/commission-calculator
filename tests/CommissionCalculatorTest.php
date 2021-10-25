@@ -11,7 +11,6 @@ use Sarahman\CommissionTask\CommissionRule\WithdrawBusinessRule;
 use Sarahman\CommissionTask\CommissionRule\WithdrawPrivateRule;
 use Sarahman\CommissionTask\Service\DataReader\CsvDataReader;
 use Sarahman\CommissionTask\Service\ExchangeRate\Client;
-use Sarahman\CommissionTask\Service\History\WeeklyHistory;
 
 class CommissionCalculatorTest extends TestCase
 {
@@ -39,7 +38,7 @@ class CommissionCalculatorTest extends TestCase
         $rules = [
             new DepositRule(),
             new WithdrawBusinessRule(),
-            new WithdrawPrivateRule($this->exchangeClientObj, new WeeklyHistory()),
+            new WithdrawPrivateRule($this->exchangeClientObj),
         ];
 
         $calculator = new CommissionCalculator($collection, $rules);
@@ -61,7 +60,7 @@ class CommissionCalculatorTest extends TestCase
         $rules = [
             new DepositRule(),
             new WithdrawBusinessRule(),
-            new WithdrawPrivateRule($this->exchangeClientObj, new WeeklyHistory()),
+            new WithdrawPrivateRule($this->exchangeClientObj),
         ];
 
         $calculator = new CommissionCalculator($collection, $rules);

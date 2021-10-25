@@ -7,11 +7,9 @@ namespace Sarahman\CommissionTask\CommissionRule;
 use DateTime;
 use Sarahman\CommissionTask\Service\DataReader\Transaction;
 use Sarahman\CommissionTask\Service\ExchangeRate\Client;
-use Sarahman\CommissionTask\Service\History\WeeklyHistory;
 
 class WithdrawPrivateRule implements RuleContract
 {
-    private $historyManager;
     private $exchangeClient;
 
     /**
@@ -29,13 +27,18 @@ class WithdrawPrivateRule implements RuleContract
      */
     private $commissionFee;
 
-    public function __construct(Client $exchangeClient, WeeklyHistory $historyManager)
+    /**
+     * @var array
+     */
+    private $history;
+
+    public function __construct(Client $exchangeClient)
     {
         $this->exchangeClient = $exchangeClient;
-        $this->historyManager = $historyManager;
         $this->weeklyFreeTransactionCount = 3;
         $this->weeklyChargeFreeAmount = 1000;
         $this->commissionFee = 0.3;
+        $this->history = [];
     }
 
     public function applyRule(Transaction $transaction): Transaction
@@ -46,9 +49,10 @@ class WithdrawPrivateRule implements RuleContract
                 $transaction->getUserIdentification(),
                 $this->getWeekCount($transaction->getTransactionDate())
             );
-            $weeklyHistory = $this->historyManager->getData($index);
 
-            if (0 === count($weeklyHistory)) {
+            if (isset($this->history[$index])) {
+                $weeklyHistory = $this->history[$index];
+            } else {
                 $weeklyHistory = ['totalAmount' => 0.00, 'transactionCount' => 0];
             }
 
@@ -86,7 +90,9 @@ class WithdrawPrivateRule implements RuleContract
         $weeklyHistory['totalAmount'] += $amount;
         $weeklyHistory['transactionCount']++;
 
-        return $this->historyManager->saveData($index, $weeklyHistory);
+        $this->history[$index] = $weeklyHistory;
+
+        return true;
     }
 
     private function getWeekCount(string $date): string
