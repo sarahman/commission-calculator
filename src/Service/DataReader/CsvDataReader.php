@@ -58,6 +58,16 @@ class CsvDataReader implements DataReaderInterface
             $data[5] = '';
         }
 
-        return new Transaction($data[0], $data[1], $data[2], $data[3], $data[4], $data[5]);
+        $transaction = new Transaction();
+
+        $transaction->setTransactionDate($data[0]);
+        $transaction->setUserIdentification($data[1]);
+        $transaction->setUserType($data[2]);
+        $transaction->setOperationType($data[3]);
+        $transaction->setAmount($data[4]);
+        $transaction->setCurrency($data[5]);
+        $transaction->setCommission(0.00);
+
+        return $transaction;
     }
 }

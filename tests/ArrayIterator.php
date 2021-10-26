@@ -20,7 +20,17 @@ class ArrayIterator implements DataReaderInterface
     public function getData(): Generator
     {
         foreach ($this->data as $row) {
-            yield new Transaction($row[0], $row[1], $row[2], $row[3], $row[4], $row[5]);
+            $transaction = new Transaction();
+
+            $transaction->setTransactionDate($row[0]);
+            $transaction->setUserIdentification($row[1]);
+            $transaction->setUserType($row[2]);
+            $transaction->setOperationType($row[3]);
+            $transaction->setAmount($row[4]);
+            $transaction->setCurrency($row[5]);
+            $transaction->setCommission(0.00);
+
+            yield $transaction;
         }
     }
 }
