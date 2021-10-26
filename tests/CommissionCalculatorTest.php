@@ -11,42 +11,24 @@ use Sarahman\CommissionTask\CommissionRule\DepositRule;
 use Sarahman\CommissionTask\CommissionRule\WithdrawBusinessRule;
 use Sarahman\CommissionTask\CommissionRule\WithdrawPrivateRule;
 use Sarahman\CommissionTask\Service\DataReader\CsvDataReader;
-use Sarahman\CommissionTask\Service\ExchangeRate\Client;
 
 class CommissionCalculatorTest extends TestCase
 {
-    /**
-     * @var Client
-     */
-    private MockObject $exchangeClientObj;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->exchangeClientObj = $this->getMockBuilder(Client::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getRate'])
-            ->getMock()
-        ;
-    }
-
     public function testAllTransactionsWithMatchingInputAndOutput()
     {
-        $this->exchangeClientObj->method('getRate')->will($this->returnValueMap([
-            ['EUR', 1.0],
-            ['USD', 1.1497],
-            ['JPY', 129.53],
-        ]));
-
-        $collection = new CsvDataReader('./input.csv');
+        $dataReader = new CsvDataReader('./input.csv');
+        $exchangeRates = [
+            'EUR' => 1.0,
+            'USD' => 1.1497,
+            'JPY' => 129.53,
+        ];
         $rules = [
             new DepositRule(0.03),
             new WithdrawBusinessRule(0.5),
-            new WithdrawPrivateRule(0.3, 'EUR', $this->exchangeClientObj),
+            new WithdrawPrivateRule(0.3, 'EUR', $exchangeRates, 1000, 3),
         ];
 
-        $calculator = new CommissionCalculator($collection, $rules);
+        $calculator = new CommissionCalculator($dataReader, $rules);
         $commissions = $calculator->calculate();
 
         $this->assertIsArray($commissions);

@@ -6,24 +6,23 @@ namespace Sarahman\CommissionTask\CommissionRule;
 
 use DateTime;
 use Sarahman\CommissionTask\Service\DataReader\Transaction;
-use Sarahman\CommissionTask\Service\ExchangeRate\Client;
 
 class WithdrawPrivateRule implements RuleContract
 {
     private float $commissionPercentage;
-    private Client $currencyExchangeClient;
+    private string $baseCurrency;
+    private array $exchangeRates;
     private int $weeklyFreeTransactionCount;
     private float $weeklyChargeFreeAmount;
     private array $history;
-    private string $baseCurrency;
 
-    public function __construct(float $commissionPercentage, string $baseCurrency, Client $currencyExchangeClient)
+    public function __construct($commissionPercentage, string $baseCurrency, array $exchangeRates, float $weeklyChargeFreeAmount, int $weeklyFreeTransactionCount)
     {
         $this->commissionPercentage = $commissionPercentage;
         $this->baseCurrency = $baseCurrency;
-        $this->currencyExchangeClient = $currencyExchangeClient;
-        $this->weeklyFreeTransactionCount = 3;
-        $this->weeklyChargeFreeAmount = 1000;
+        $this->exchangeRates = $exchangeRates;
+        $this->weeklyFreeTransactionCount = $weeklyFreeTransactionCount;
+        $this->weeklyChargeFreeAmount = $weeklyChargeFreeAmount;
         $this->history = [];
     }
 
@@ -42,10 +41,13 @@ class WithdrawPrivateRule implements RuleContract
                 $weeklyHistory = ['totalAmount' => 0.00, 'transactionCount' => 0];
             }
 
-            if ($this->baseCurrency === $transaction->getCurrency()) {
+            if (
+                $this->baseCurrency == $transaction->getCurrency() ||
+                !isset($this->exchangeRates[$transaction->getCurrency()])
+            ) {
                 $rate = 1.0;
             } else {
-                $rate = $this->currencyExchangeClient->getRate($transaction->getCurrency());
+                $rate = $this->exchangeRates[$transaction->getCurrency()];
             }
 
             $euroAmount = $transaction->getAmount() / $rate;

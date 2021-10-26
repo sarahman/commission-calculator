@@ -7,7 +7,7 @@ namespace Sarahman\CommissionTask\Service\ExchangeRate;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 
-class Client
+class CurrencyExchangeApiClient
 {
     private ClientInterface $client;
     private string $accessKey;
@@ -18,7 +18,7 @@ class Client
         $this->accessKey = $accessKey;
     }
 
-    public function getRate(string $currency): float
+    public function getRates(): array
     {
         try {
             $response = $this->client->request('GET', 'latest', $this->getRequestOptions());
@@ -30,14 +30,9 @@ class Client
             throw new CurrencyExchangeApiException('Invalid data is provided from the rate exchange service!');
         }
 
-        $body = $response->getBody()->getContents();
-        $rates = [];
+        $rates = json_decode($response->getBody()->getContents(), true);
 
-        if ($this->isJson($body)) {
-            $rates = json_decode($body, true);
-        }
-
-        return $this->format($rates, $currency);
+        return $rates['rates'];
     }
 
     private function getRequestOptions(): array
@@ -50,21 +45,5 @@ class Client
                 'Content-Type' => 'application/json',
             ],
         ];
-    }
-
-    private function isJson(string $string): bool
-    {
-        json_decode($string);
-
-        return json_last_error() === JSON_ERROR_NONE;
-    }
-
-    public function format(array $rates, string $currency): float
-    {
-        if (!isset($rates['rates']) || !isset($rates['rates'][$currency])) {
-            return 0.00;
-        }
-
-        return (float) ($rates['rates'][$currency]);
     }
 }

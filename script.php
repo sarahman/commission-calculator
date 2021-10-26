@@ -8,7 +8,7 @@ use Sarahman\CommissionTask\CommissionRule\DepositRule;
 use Sarahman\CommissionTask\CommissionRule\WithdrawBusinessRule;
 use Sarahman\CommissionTask\CommissionRule\WithdrawPrivateRule;
 use Sarahman\CommissionTask\Service\DataReader\CsvDataReader;
-use Sarahman\CommissionTask\Service\ExchangeRate\Client;
+use Sarahman\CommissionTask\Service\ExchangeRate\CurrencyExchangeApiClient;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -21,19 +21,20 @@ if (!file_exists($source)) {
     exit('Sorry; the file' . $source . ' is not existed!' . PHP_EOL);
 }
 
-$collection = new CsvDataReader($source);
-$exchangeClientObj = new Client(new GuzzleHttpClient(['base_uri' => $_ENV['EXCHANGE_RATE_URL']]), $_ENV['EXCHANGE_ACCESS_KEY']);
+$csvDataReader = new CsvDataReader($source);
+$httpClient = new GuzzleHttpClient(['base_uri' => $_ENV['EXCHANGE_RATE_URL']]);
+$currencyExchangeClient = new CurrencyExchangeApiClient($httpClient, $_ENV['EXCHANGE_ACCESS_KEY']);
+$exchangeRates = $currencyExchangeClient->getRates();
 $rules = [
     new DepositRule(0.03),
     new WithdrawBusinessRule(0.5),
-    new WithdrawPrivateRule(0.3, 'EUR', $exchangeClientObj),
+    new WithdrawPrivateRule(0.3, 'EUR', $exchangeRates, 1000, 3),
 ];
 
-$calculator = new CommissionCalculator($collection, $rules);
+$commissionCalculator = new CommissionCalculator($csvDataReader, $rules);
 
 try {
-    $commissions = $calculator->calculate();
-} catch (Throwable $exception) {
+    $commissions = $commissionCalculator->calculate();
     exit($exception->getMessage() . PHP_EOL);
 }
 
