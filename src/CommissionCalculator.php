@@ -33,8 +33,8 @@ class CommissionCalculator
             foreach ($this->csvDataReader->getData() as $transaction) {
                 $commissions[] = $this->getTransactionalCommission($transaction);
             }
-        } catch (Throwable $e) {
-            new CalculationException('Commission calculation error occurred!', 500, $e);
+        } catch (Throwable $throwable) {
+            new CalculationException('Commission calculation error occurred!', 500, $throwable);
         }
 
         return $commissions;

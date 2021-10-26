@@ -42,8 +42,8 @@ class WithdrawPrivateRule implements RuleContract
             }
 
             if (
-                $this->baseCurrency == $transaction->getCurrency() ||
-                !isset($this->exchangeRates[$transaction->getCurrency()])
+                $this->baseCurrency === $transaction->getCurrency()
+                || !isset($this->exchangeRates[$transaction->getCurrency()])
             ) {
                 $rate = 1.0;
             } else {
