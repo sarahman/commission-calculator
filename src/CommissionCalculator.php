@@ -6,20 +6,20 @@ namespace Sarahman\CommissionTask;
 
 use Sarahman\CommissionTask\CommissionRule\RuleContract;
 use Sarahman\CommissionTask\Exception\CalculationException;
-use Sarahman\CommissionTask\Service\DataReader\CsvDataReader;
+use Sarahman\CommissionTask\Service\DataReader\DataReaderInterface;
 use Sarahman\CommissionTask\Service\DataReader\Transaction;
 use Throwable;
 
 class CommissionCalculator
 {
-    private CsvDataReader $csvDataReader;
+    private DataReaderInterface $csvDataReader;
 
     /**
      * @var RuleContract[]
      */
     private array $rules;
 
-    public function __construct(CsvDataReader $reader, array $rules)
+    public function __construct(DataReaderInterface $reader, array $rules)
     {
         $this->csvDataReader = $reader;
         $this->rules = $rules;

@@ -6,7 +6,7 @@ namespace Sarahman\CommissionTask\Service\DataReader;
 
 use Generator;
 
-class CsvDataReader
+class CsvDataReader implements DataReaderInterface
 {
     private string $filepath;
 
