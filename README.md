@@ -10,7 +10,7 @@ Clone the repository. Make sure you have `docker` installed in your machine. Now
 docker build -t sarahman-commission-calculator .
 docker run -dtv "$(pwd):/var/www/html" --name sarahman-commission-calculator sarahman-commission-calculator
 
-docker exec sarahman-commission-calculator sh -l -c 'composer install'
+docker exec sarahman-commission-calculator sh -l -c 'composer install && cp .env.example .env'
 docker exec sarahman-commission-calculator sh -l -c 'php script.php input.csv'
 ```
 
