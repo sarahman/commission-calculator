@@ -10,18 +10,20 @@ use Sarahman\CommissionTask\Service\ExchangeRate\Client;
 
 class WithdrawPrivateRule implements RuleContract
 {
+    private float $commissionPercentage;
     private Client $currencyExchangeClient;
     private int $weeklyFreeTransactionCount;
     private float $weeklyChargeFreeAmount;
-    private float $commissionFee;
     private array $history;
+    private string $baseCurrency;
 
-    public function __construct(Client $currencyExchangeClient)
+    public function __construct(float $commissionPercentage, string $baseCurrency, Client $currencyExchangeClient)
     {
+        $this->commissionPercentage = $commissionPercentage;
+        $this->baseCurrency = $baseCurrency;
         $this->currencyExchangeClient = $currencyExchangeClient;
         $this->weeklyFreeTransactionCount = 3;
         $this->weeklyChargeFreeAmount = 1000;
-        $this->commissionFee = 0.3;
         $this->history = [];
     }
 
@@ -40,7 +42,7 @@ class WithdrawPrivateRule implements RuleContract
                 $weeklyHistory = ['totalAmount' => 0.00, 'transactionCount' => 0];
             }
 
-            if ('EUR' === $transaction->getCurrency()) {
+            if ($this->baseCurrency === $transaction->getCurrency()) {
                 $rate = 1.0;
             } else {
                 $rate = $this->currencyExchangeClient->getRate($transaction->getCurrency());
@@ -62,7 +64,7 @@ class WithdrawPrivateRule implements RuleContract
                 $chargeableAmount = abs(($weeklyHistory['totalAmount'] + $euroAmount) - $this->weeklyChargeFreeAmount);
             }
 
-            $transaction->setCommission(($this->commissionFee / 100) * $chargeableAmount * $rate);
+            $transaction->setCommission(($this->commissionPercentage / 100) * $chargeableAmount * $rate);
             $this->updateHistory($index, $weeklyHistory, $euroAmount);
         }
 

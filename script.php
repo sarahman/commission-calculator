@@ -24,9 +24,9 @@ if (!file_exists($source)) {
 $collection = new CsvDataReader($source);
 $exchangeClientObj = new Client(new GuzzleHttpClient(['base_uri' => $_ENV['EXCHANGE_RATE_URL']]), $_ENV['EXCHANGE_ACCESS_KEY']);
 $rules = [
-    new DepositRule(),
-    new WithdrawBusinessRule(),
-    new WithdrawPrivateRule($exchangeClientObj),
+    new DepositRule(0.03),
+    new WithdrawBusinessRule(0.5),
+    new WithdrawPrivateRule(0.3, 'EUR', $exchangeClientObj),
 ];
 
 $calculator = new CommissionCalculator($collection, $rules);

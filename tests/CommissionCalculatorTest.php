@@ -41,9 +41,9 @@ class CommissionCalculatorTest extends TestCase
 
         $collection = new CsvDataReader('./input.csv');
         $rules = [
-            new DepositRule(),
-            new WithdrawBusinessRule(),
-            new WithdrawPrivateRule($this->exchangeClientObj),
+            new DepositRule(0.03),
+            new WithdrawBusinessRule(0.5),
+            new WithdrawPrivateRule(0.3, 'EUR', $this->exchangeClientObj),
         ];
 
         $calculator = new CommissionCalculator($collection, $rules);

@@ -8,10 +8,17 @@ use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
 class DepositRule implements RuleContract
 {
+    private float $commissionPercentage;
+
+    public function __construct(float $commissionPercentage)
+    {
+        $this->commissionPercentage = $commissionPercentage;
+    }
+
     public function applyRule(Transaction $transaction): Transaction
     {
         if ('deposit' === $transaction->getOperationType()) {
-            $transaction->setCommission((0.03 / 100) * $transaction->getAmount());
+            $transaction->setCommission($this->commissionPercentage / 100 * $transaction->getAmount());
         }
 
         return $transaction;
