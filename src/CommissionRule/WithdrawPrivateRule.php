@@ -50,24 +50,24 @@ class WithdrawPrivateRule implements RuleContract
                 $rate = $this->exchangeRates[$transaction->getCurrency()];
             }
 
-            $euroAmount = $transaction->getAmount() / $rate;
+            $exchangedAmount = $transaction->getAmount() / $rate;
 
             if (
                 $weeklyHistory['transactionCount'] >= $this->weeklyFreeTransactionCount
                 || $weeklyHistory['totalAmount'] >= $this->weeklyChargeFreeAmount
             ) {
-                $chargeableAmount = $euroAmount;
+                $chargeableAmount = $exchangedAmount;
             } elseif (
                 $weeklyHistory['transactionCount'] < $this->weeklyFreeTransactionCount
-                && $weeklyHistory['totalAmount'] + $euroAmount <= $this->weeklyChargeFreeAmount
+                && $weeklyHistory['totalAmount'] + $exchangedAmount <= $this->weeklyChargeFreeAmount
             ) {
                 $chargeableAmount = 0.00;
             } else {
-                $chargeableAmount = abs(($weeklyHistory['totalAmount'] + $euroAmount) - $this->weeklyChargeFreeAmount);
+                $chargeableAmount = abs(($weeklyHistory['totalAmount'] + $exchangedAmount) - $this->weeklyChargeFreeAmount);
             }
 
             $transaction->setCommission(($this->commissionPercentage / 100) * $chargeableAmount * $rate);
-            $this->updateHistory($index, $weeklyHistory, $euroAmount);
+            $this->updateHistory($index, $weeklyHistory, $exchangedAmount);
         }
 
         return $transaction;
