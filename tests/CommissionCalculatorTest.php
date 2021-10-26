@@ -13,21 +13,30 @@ use Sarahman\CommissionTask\Service\DataReader\CsvDataReader;
 
 class CommissionCalculatorTest extends TestCase
 {
-    public function testAllTransactionsWithMatchingInputAndOutput()
+    private array $rules;
+
+    public function setUp(): void
     {
-        $dataReader = new CsvDataReader('./input.csv');
+        parent::setUp();
+
         $exchangeRates = [
             'EUR' => 1.0,
             'USD' => 1.1497,
             'JPY' => 129.53,
         ];
-        $rules = [
+
+        $this->rules = [
             new DepositRule(0.03),
             new WithdrawBusinessRule(0.5),
             new WithdrawPrivateRule(0.3, 'EUR', $exchangeRates, 1000, 3),
         ];
+    }
 
-        $calculator = new CommissionCalculator($dataReader, $rules);
+    public function testAllTransactionsWithMatchingInputAndOutput()
+    {
+        $dataReader = new CsvDataReader('./input.csv');
+
+        $calculator = new CommissionCalculator($dataReader, $this->rules);
         $commissions = $calculator->calculate();
 
         $this->assertIsArray($commissions);
@@ -75,18 +84,8 @@ class CommissionCalculatorTest extends TestCase
                 $operationCurrency
             ]
         ]);
-        $exchangeRates = [
-            'EUR' => 1.0,
-            'USD' => 1.1497,
-            'JPY' => 129.53,
-        ];
-        $rules = [
-            new DepositRule(0.03),
-            new WithdrawBusinessRule(0.5),
-            new WithdrawPrivateRule(0.3, 'EUR', $exchangeRates, 1000, 3),
-        ];
 
-        $calculator = new CommissionCalculator($dataReader, $rules);
+        $calculator = new CommissionCalculator($dataReader, $this->rules);
         $commissions = $calculator->calculate();
 
         $this->assertIsArray($commissions);
