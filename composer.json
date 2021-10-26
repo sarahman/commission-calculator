@@ -14,7 +14,7 @@
         }
     },
     "require": {
-        "php": ">=7.4",
+        "php": "^7.4",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^7.4",
         "vlucas/phpdotenv": "^5.3"
@@ -29,19 +29,10 @@
         "bin-dir": "bin"
     },
     "scripts": {
-        "post-root-package-install": [
-            "@create-env"
-        ],
         "post-install-cmd": [
-            "Paysera\\PhpCsFixerConfig\\Composer\\PhpCsFixerConfigProvider::copyPhpCs"
-        ],
-        "post-update-cmd": [
-            "Paysera\\PhpCsFixerConfig\\Composer\\PhpCsFixerConfigProvider::copyPhpCs"
-        ],
-        "create-env": [
+            "Paysera\\PhpCsFixerConfig\\Composer\\PhpCsFixerConfigProvider::copyPhpCs",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
-        "script": "@php script.php input.csv",
         "phpcs": "phpcs --standard=PSR12 ./src",
         "phpunit": "phpunit",
         "paysera-fix-cs": "paysera-php-cs-fixer fix",
