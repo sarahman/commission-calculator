@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask;
 
-use Sarahman\CommissionTask\CommissionRule\RuleContract;
+use Sarahman\CommissionTask\CommissionRule\RuleInterface;
 use Sarahman\CommissionTask\Exception\CalculationException;
 use Sarahman\CommissionTask\Service\DataReader\DataReaderInterface;
 use Sarahman\CommissionTask\Service\DataReader\Transaction;
@@ -15,7 +15,7 @@ class CommissionCalculator
     private DataReaderInterface $csvDataReader;
 
     /**
-     * @var RuleContract[]
+     * @var RuleInterface[]
      */
     private array $rules;
 

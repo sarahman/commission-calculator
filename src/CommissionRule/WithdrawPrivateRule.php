@@ -7,7 +7,7 @@ namespace Sarahman\CommissionTask\CommissionRule;
 use DateTime;
 use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
-class WithdrawPrivateRule implements RuleContract
+class WithdrawPrivateRule implements RuleInterface
 {
     private float $commissionPercentage;
     private string $baseCurrency;

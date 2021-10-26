@@ -6,7 +6,7 @@ namespace Sarahman\CommissionTask\CommissionRule;
 
 use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
-interface RuleContract
+interface RuleInterface
 {
     public function applyRule(Transaction $transaction): Transaction;
 }

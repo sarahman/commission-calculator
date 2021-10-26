@@ -6,7 +6,7 @@ namespace Sarahman\CommissionTask\CommissionRule;
 
 use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
-class WithdrawBusinessRule implements RuleContract
+class WithdrawBusinessRule implements RuleInterface
 {
     private float $commissionPercentage;
 

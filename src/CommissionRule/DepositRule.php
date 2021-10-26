@@ -6,7 +6,7 @@ namespace Sarahman\CommissionTask\CommissionRule;
 
 use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
-class DepositRule implements RuleContract
+class DepositRule implements RuleInterface
 {
     private float $commissionPercentage;
 
