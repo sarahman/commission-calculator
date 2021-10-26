@@ -5,17 +5,23 @@ declare(strict_types=1);
 namespace Sarahman\CommissionTask;
 
 use Sarahman\CommissionTask\CommissionRule\RuleContract;
+use Sarahman\CommissionTask\Exception\CalculationException;
 use Sarahman\CommissionTask\Service\DataReader\CsvDataReader;
 use Sarahman\CommissionTask\Service\DataReader\Transaction;
+use Throwable;
 
 class CommissionCalculator
 {
-    private CsvDataReader $reader;
+    private CsvDataReader $csvDataReader;
+
+    /**
+     * @var RuleContract[]
+     */
     private array $rules;
 
     public function __construct(CsvDataReader $reader, array $rules)
     {
-        $this->reader = $reader;
+        $this->csvDataReader = $reader;
         $this->rules = $rules;
     }
 
@@ -23,8 +29,12 @@ class CommissionCalculator
     {
         $commissions = [];
 
-        foreach ($this->reader->getData() as $transaction) {
-            $commissions[] = $this->getTransactionalCommission($transaction);
+        try {
+            foreach ($this->csvDataReader->getData() as $transaction) {
+                $commissions[] = $this->getTransactionalCommission($transaction);
+            }
+        } catch (Throwable $e) {
+            new CalculationException('Commission calculation error occurred!', 500, $e);
         }
 
         return $commissions;
@@ -33,7 +43,6 @@ class CommissionCalculator
     private function getTransactionalCommission(Transaction $transaction): string
     {
         foreach ($this->rules as $rule) {
-            /** @var RuleContract $rule */
             $rule->applyRule($transaction);
         }
 
