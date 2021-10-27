@@ -26,7 +26,7 @@ class ArrayIterator implements DataReaderInterface
             $transaction->setUserIdentification($row[1]);
             $transaction->setUserType($row[2]);
             $transaction->setOperationType($row[3]);
-            $transaction->setAmount($row[4]);
+            $transaction->setAmount((float) $row[4]);
             $transaction->setCurrency($row[5]);
             $transaction->setCommission(0.00);
 
