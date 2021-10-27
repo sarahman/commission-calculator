@@ -34,7 +34,7 @@ class CommissionCalculator
                 $commissions[] = $this->getTransactionalCommission($transaction);
             }
         } catch (Throwable $throwable) {
-            new CalculationException('Commission calculation error occurred!', 500, $throwable);
+            throw new CalculationException('Commission calculation error occurred!', 500, $throwable);
         }
 
         return $commissions;
@@ -43,7 +43,9 @@ class CommissionCalculator
     private function getTransactionalCommission(Transaction $transaction): string
     {
         foreach ($this->rules as $rule) {
-            $rule->applyRule($transaction);
+            if ($rule->supports($transaction)) {
+                $rule->applyOn($transaction);
+            }
         }
 
         return $this->formatOutput($transaction);
@@ -52,7 +54,7 @@ class CommissionCalculator
     private function formatOutput(Transaction $transaction): string
     {
         if ('JPY' === $transaction->getCurrency()) {
-            return (string) ceil($transaction->getCommission());
+            return (string)ceil($transaction->getCommission());
         }
 
         return number_format($transaction->getCommission(), 2, '.', '');

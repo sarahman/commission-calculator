@@ -15,11 +15,14 @@ class DepositRule implements RuleInterface
         $this->commissionPercentage = $commissionPercentage;
     }
 
-    public function applyRule(Transaction $transaction): Transaction
+    public function supports(Transaction $transaction): bool
     {
-        if ('deposit' === $transaction->getOperationType()) {
-            $transaction->setCommission($this->commissionPercentage / 100 * $transaction->getAmount());
-        }
+        return 'deposit' === $transaction->getOperationType();
+    }
+
+    public function applyOn(Transaction $transaction): Transaction
+    {
+        $transaction->setCommission($this->commissionPercentage / 100 * $transaction->getAmount());
 
         return $transaction;
     }

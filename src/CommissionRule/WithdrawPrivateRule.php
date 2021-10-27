@@ -26,59 +26,57 @@ class WithdrawPrivateRule implements RuleInterface
         $this->history = [];
     }
 
-    public function applyRule(Transaction $transaction): Transaction
+    public function supports(Transaction $transaction): bool
     {
-        if ('withdraw' === $transaction->getOperationType() && 'private' === $transaction->getUserType()) {
-            $index = sprintf(
-                '%s:%s',
-                $transaction->getUserIdentification(),
-                $this->getWeekCount($transaction->getTransactionDate())
-            );
-
-            if (isset($this->history[$index])) {
-                $weeklyHistory = $this->history[$index];
-            } else {
-                $weeklyHistory = ['totalAmount' => 0.00, 'transactionCount' => 0];
-            }
-
-            if (
-                $this->baseCurrency === $transaction->getCurrency()
-                || !isset($this->exchangeRates[$transaction->getCurrency()])
-            ) {
-                $rate = 1.0;
-            } else {
-                $rate = $this->exchangeRates[$transaction->getCurrency()];
-            }
-
-            $exchangedAmount = $transaction->getAmount() / $rate;
-
-            if (
-                $weeklyHistory['transactionCount'] >= $this->weeklyFreeTransactionCount
-                || $weeklyHistory['totalAmount'] >= $this->weeklyChargeFreeAmount
-            ) {
-                $chargeableAmount = $exchangedAmount;
-            } elseif (
-                $weeklyHistory['transactionCount'] < $this->weeklyFreeTransactionCount
-                && $weeklyHistory['totalAmount'] + $exchangedAmount <= $this->weeklyChargeFreeAmount
-            ) {
-                $chargeableAmount = 0.00;
-            } else {
-                $chargeableAmount = abs(($weeklyHistory['totalAmount'] + $exchangedAmount) - $this->weeklyChargeFreeAmount);
-            }
-
-            $transaction->setCommission(($this->commissionPercentage / 100) * $chargeableAmount * $rate);
-            $this->updateHistory($index, $weeklyHistory, $exchangedAmount);
-        }
-
-        return $transaction;
+        return
+            'withdraw' === $transaction->getOperationType()
+            && 'private' === $transaction->getUserType()
+        ;
     }
 
-    private function updateHistory(string $index, array $weeklyHistory, float $amount): void
+    public function applyOn(Transaction $transaction): Transaction
     {
-        $weeklyHistory['totalAmount'] += $amount;
-        $weeklyHistory['transactionCount']++;
+        $index = sprintf(
+            '%s:%s',
+            $transaction->getUserIdentification(),
+            $this->getWeekCount($transaction->getTransactionDate())
+        );
 
-        $this->history[$index] = $weeklyHistory;
+        if (isset($this->history[$index])) {
+            $weeklyHistory = $this->history[$index];
+        } else {
+            $weeklyHistory = ['totalAmount' => 0.00, 'transactionCount' => 0];
+        }
+
+        if (
+            $this->baseCurrency === $transaction->getCurrency()
+            || !isset($this->exchangeRates[$transaction->getCurrency()])
+        ) {
+            $rate = 1.0;
+        } else {
+            $rate = $this->exchangeRates[$transaction->getCurrency()];
+        }
+
+        $exchangedAmount = $transaction->getAmount() / $rate;
+
+        if (
+            $weeklyHistory['transactionCount'] >= $this->weeklyFreeTransactionCount
+            || $weeklyHistory['totalAmount'] >= $this->weeklyChargeFreeAmount
+        ) {
+            $chargeableAmount = $exchangedAmount;
+        } elseif (
+            $weeklyHistory['transactionCount'] < $this->weeklyFreeTransactionCount
+            && $weeklyHistory['totalAmount'] + $exchangedAmount <= $this->weeklyChargeFreeAmount
+        ) {
+            $chargeableAmount = 0.00;
+        } else {
+            $chargeableAmount = abs(($weeklyHistory['totalAmount'] + $exchangedAmount) - $this->weeklyChargeFreeAmount);
+        }
+
+        $transaction->setCommission(($this->commissionPercentage / 100) * $chargeableAmount * $rate);
+        $this->updateHistory($index, $weeklyHistory, $exchangedAmount);
+
+        return $transaction;
     }
 
     private function getWeekCount(string $date): string
@@ -88,5 +86,13 @@ class WithdrawPrivateRule implements RuleInterface
         $totalDays = (int) $endDate->diff($startDate)->format('%a');
 
         return 'W#' . (string) (ceil($totalDays / 7) + ($totalDays % 7 ? 0 : 1));
+    }
+
+    private function updateHistory(string $index, array $weeklyHistory, float $amount): void
+    {
+        $weeklyHistory['totalAmount'] += $amount;
+        $weeklyHistory['transactionCount']++;
+
+        $this->history[$index] = $weeklyHistory;
     }
 }

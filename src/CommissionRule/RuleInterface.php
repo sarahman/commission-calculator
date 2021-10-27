@@ -8,5 +8,7 @@ use Sarahman\CommissionTask\Service\DataReader\Transaction;
 
 interface RuleInterface
 {
-    public function applyRule(Transaction $transaction): Transaction;
+    public function supports(Transaction $transaction): bool;
+
+    public function applyOn(Transaction $transaction): Transaction;
 }

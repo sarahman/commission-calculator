@@ -15,11 +15,17 @@ class WithdrawBusinessRule implements RuleInterface
         $this->commissionPercentage = $commissionPercentage;
     }
 
-    public function applyRule(Transaction $transaction): Transaction
+    public function supports(Transaction $transaction): bool
     {
-        if ('withdraw' === $transaction->getOperationType() && 'business' === $transaction->getUserType()) {
-            $transaction->setCommission($this->commissionPercentage / 100 * $transaction->getAmount());
-        }
+        return
+            'withdraw' === $transaction->getOperationType()
+            && 'business' === $transaction->getUserType()
+        ;
+    }
+
+    public function applyOn(Transaction $transaction): Transaction
+    {
+        $transaction->setCommission($this->commissionPercentage / 100 * $transaction->getAmount());
 
         return $transaction;
     }
