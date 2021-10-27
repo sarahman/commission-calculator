@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Sarahman\CommissionTask\Tests;
 
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use DMS\PHPUnitExtensions\ArraySubset\Assert;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Sarahman\CommissionTask\CommissionCalculator;
 use Sarahman\CommissionTask\CommissionRule\DepositRule;
@@ -13,8 +14,6 @@ use Sarahman\CommissionTask\CommissionRule\WithdrawPrivateRule;
 
 class CommissionCalculatorTest extends TestCase
 {
-    use ArraySubsetAsserts;
-
     private array $rules;
 
     public function setUp(): void
@@ -36,6 +35,7 @@ class CommissionCalculatorTest extends TestCase
 
     /**
      * @dataProvider getBulkTransactionalInputsAndOutputs
+     * @throws Exception
      */
     public function testAllTransactionsWithMatchingInputAndOutput(array $input, array $output)
     {
@@ -43,10 +43,7 @@ class CommissionCalculatorTest extends TestCase
         $calculator = new CommissionCalculator($dataReader, $this->rules);
         $commissions = $calculator->calculate();
 
-        $this->assertIsArray($commissions);
-        $this->assertEquals(13, count($commissions));
-        $this->assertArraySubset($commissions, $output);
-        $this->assertEquals($commissions, $output);
+        Assert::assertArraySubset($commissions, $output);
     }
 
     /**
@@ -61,26 +58,26 @@ class CommissionCalculatorTest extends TestCase
         string $operationCurrency,
         string $expectedCommission
     ) {
-        $dataReader = new ArrayIterator([
+        $dataReader = new ArrayIterator(
             [
-                $date,
-                $userIdentification,
-                $userType,
-                $operationType,
-                (float) $operationAmount,
-                $operationCurrency
+                [
+                    $date,
+                    $userIdentification,
+                    $userType,
+                    $operationType,
+                    (float) $operationAmount,
+                    $operationCurrency
+                ]
             ]
-        ]);
+        );
 
         $calculator = new CommissionCalculator($dataReader, $this->rules);
         $commissions = $calculator->calculate();
 
-        $this->assertIsArray($commissions);
-        $this->assertEquals(1, count($commissions));
         $this->assertEquals($expectedCommission, $commissions[0]);
     }
 
-    public function getBulkTransactionalInputsAndOutputs()
+    public function getBulkTransactionalInputsAndOutputs(): array
     {
         return [
             [
@@ -118,7 +115,7 @@ class CommissionCalculatorTest extends TestCase
         ];
     }
 
-    public function getEveryTransactionalInputsAndOutput()
+    public function getEveryTransactionalInputsAndOutput(): array
     {
         return [
             ['2014-12-31', '4', 'private', 'withdraw', '1200.00', 'EUR', '0.60'],
