@@ -14,6 +14,11 @@ class Transaction
     private string $transactionDate;
     private float $commission;
 
+    public function __construct()
+    {
+        $this->commission = 0.00;
+    }
+
     public function getTransactionDate(): string
     {
         return $this->transactionDate;
